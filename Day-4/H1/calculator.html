@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Calculator</title>
+
+    <link rel="stylesheet" href="calculator.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<nav>
+
+<div class="logo">
+Smart Calculator
+</div>
+
+<ul>
+
+<li><a href="index.html">Home</a></li>
+
+<li><a href="calculator.html">Calculator</a></li>
+
+<li><a href="quiz.html">Math Quiz</a></li>
+
+<li><a href="statistics.html">Statistics</a></li>
+
+<li><a href="percentage.html">Percentage</a></li>
+
+</ul>
+
+</nav>
+
+<section class="calculator-section">
+
+<h1>
+
+Basic Calculator
+
+</h1>
+
+<div class="calculator">
+
+<input
+type="text"
+id="display"
+readonly>
+
+<div class="buttons">
+
+<button onclick="clearDisplay()">AC</button>
+
+<button onclick="backspace()">⌫</button>
+
+<button onclick="append('%')">%</button>
+
+<button onclick="append('/')">÷</button>
+
+<button onclick="append('7')">7</button>
+
+<button onclick="append('8')">8</button>
+
+<button onclick="append('9')">9</button>
+
+<button onclick="append('*')">×</button>
+
+<button onclick="append('4')">4</button>
+
+<button onclick="append('5')">5</button>
+
+<button onclick="append('6')">6</button>
+
+<button onclick="append('-')">−</button>
+
+<button onclick="append('1')">1</button>
+
+<button onclick="append('2')">2</button>
+
+<button onclick="append('3')">3</button>
+
+<button onclick="append('+')">+</button>
+
+<button onclick="append('0')">0</button>
+
+<button onclick="append('.')">.</button>
+
+<button onclick="toggleSign()">+/-</button>
+
+<button class="equal" onclick="calculate()">=</button>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+Made using HTML, CSS & JavaScript
+
+</footer>
+
+<script src="calculator.js"></script>
+
+</body>
+
+</html>

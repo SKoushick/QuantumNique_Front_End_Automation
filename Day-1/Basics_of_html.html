@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Koushick Resume</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+    scroll-behavior:smooth;
+}
+
+body{
+    background:linear-gradient(135deg,#0f172a,#1e3a8a,#3b82f6);
+    color:white;
+}
+
+
+nav{
+    position:fixed;
+    top:0;
+    width:100%;
+    background:rgba(0,0,0,0.3);
+    backdrop-filter:blur(10px);
+    z-index:1000;
+    padding:15px;
+}
+
+nav ul{
+    display:flex;
+    justify-content:center;
+    gap:30px;
+    list-style:none;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+.hero{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    flex-direction:column;
+    padding:20px;
+}
+
+.hero img{
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    border:5px solid white;
+    object-fit:cover;
+    box-shadow:0 0 30px rgba(255,255,255,0.4);
+}
+
+.hero h1{
+    margin-top:20px;
+    font-size:3rem;
+}
+
+.hero p{
+    font-size:1.3rem;
+    margin-top:10px;
+    color:#dbeafe;
+}
+
+.btn{
+    margin-top:20px;
+    display:inline-block;
+    padding:12px 30px;
+    background:white;
+    color:#1e3a8a;
+    text-decoration:none;
+    border-radius:30px;
+    font-weight:bold;
+}
+
+
+section{
+    padding:80px 10%;
+}
+
+.section-title{
+    text-align:center;
+    font-size:2.5rem;
+    margin-bottom:40px;
+}
+
+
+.card{
+    background:rgba(255,255,255,0.1);
+    backdrop-filter:blur(15px);
+    border-radius:20px;
+    padding:30px;
+}
+
+.bar{
+    width:100%;
+    background:#334155;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#2563eb;
+    padding:15px;
+}
+
+td{
+    background:rgba(255,255,255,0.1);
+    padding:15px;
+    text-align:center;
+}
+
+table,th,td{
+    border:1px solid rgba(255,255,255,0.2);
+}
+
+
+.contact{
+    text-align:center;
+}
+
+.contact a{
+    display:inline-block;
+    margin:10px;
+    padding:12px 25px;
+    background:white;
+    color:#1e3a8a;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+
+footer{
+    text-align:center;
+    padding:25px;
+    background:rgba(0,0,0,0.3);
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+    <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+
+<div class="hero">
+
+    <img src="468742.jpg" alt="Profile">
+
+    <h1>Koushick S</h1>
+
+    <p>Software Engineer | AI & Data Science Enthusiast</p>
+
+    <a href="#about" class="btn">Explore Resume</a>
+
+</div>
+
+<section id="about">
+
+    <h2 class="section-title">About Me</h2>
+
+    <div class="card">
+        <p>
+            I am an aspiring Software Engineer with a strong interest in
+            Full Stack Development, Artificial Intelligence, Machine Learning,
+            Data Science and Business Intelligence. I enjoy building scalable
+            applications and solving real-world problems using technology.
+        </p>
+    </div>
+
+</section>
+
+
+<section id="education">
+
+    <h2 class="section-title">Education</h2>
+
+    <div class="card">
+
+        <table>
+
+            <tr>
+                <th>Institution</th>
+                <th>Degree</th>
+                <th>Year</th>
+            </tr>
+
+            <tr>
+                <td>Hindusthan College of Engineering and Technology</td>
+                <td>B.Tech Information Technology</td>
+                <td>2026</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<section id="contact">
+
+    <h2 class="section-title">Contact</h2>
+
+    <div class="contact">
+
+        <a href="mailto:koushick715@gmail.com">Email</a>
+
+        <a href="https://leetcode.com/u/kousi115/" target="_blank">
+            LeetCode
+        </a>
+
+        <a href="#">GitHub</a>
+
+        <a href="#">LinkedIn</a>
+
+    </div>
+
+</section>
+
+<footer>
+    <h3>© 2026 Koushick S | Portfolio Resume</h3>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbit Academy | One Page</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .tab-section { display: none; opacity: 0; transform: translateY(18px); transition: opacity 0.35s ease, transform 0.35s ease; }
+    .tab-section.active-section { display: block; opacity: 1; transform: translateY(0); }
+    .nav-link.active { color: var(--accent); }
+    .nav-link.active::after { content: ''; position: absolute; bottom: -6px; left: 0; right: 0; height: 3px; border-radius: 999px; background: var(--accent); }
+    nav ul { position: relative; }
+    .hero-buttons button, .hero-buttons .button, .hero-buttons .button-secondary { min-width: 140px; }
+    .category-icon { display: inline-flex; font-size: 1.8rem; margin-bottom: 1rem; }
+    .form-field label { display: block; margin-bottom: 0.5rem; color: var(--text); font-weight: 700; }
+    .error-message { color: #c32743; font-size: 0.93rem; min-height: 1em; margin-top: 0.35rem; }
+    input.error, textarea.error { border-color: #c32743; }
+    .section-heading h2 { margin-bottom: 0.4rem; }
+    @media (max-width: 980px) {
+      .hero { grid-template-columns: 1fr; }
+      .section-split, .contact-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 680px) {
+      nav ul { justify-content: center; }
+      .navbar { flex-wrap: wrap; }
+      .hero-copy h1 { font-size: 2.8rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="starfield">
+    <span style="top:8%; left:12%; animation-duration: 10s;"></span>
+    <span style="top:18%; left:72%; animation-duration: 14s; opacity:0.6;"></span>
+    <span style="top:28%; left:40%; animation-duration: 12s;"></span>
+    <span style="top:58%; left:22%; animation-duration: 11s;"></span>
+    <span style="top:72%; left:82%; animation-duration: 15s; opacity:0.55;"></span>
+  </div>
+
+  <header>
+    <div class="container navbar">
+      <div class="brand">Orbit Academy</div>
+      <nav>
+        <ul>
+          <li><a href="#home" class="nav-link active" data-target="home">Home</a></li>
+          <li><a href="#courses" class="nav-link" data-target="courses">Courses</a></li>
+          <li><a href="#categories" class="nav-link" data-target="categories">Categories</a></li>
+          <li><a href="#about" class="nav-link" data-target="about">About</a></li>
+          <li><a href="#contact" class="nav-link" data-target="contact">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a href="#courses" class="button">Launch</a>
+        <a href="#login" class="button-secondary">Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="home" class="tab-section active-section">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="badge">Space-themed learning | Cosmic career paths</p>
+          <h1>Embark on a cosmic journey to master modern skills</h1>
+          <p>Orbit Academy brings together immersive courses, mission-ready instructors, and futuristic career support in a galaxy designed for creative learners.</p>
+          <div class="hero-buttons">
+            <button class="button" data-target="courses">Start Launch</button>
+            <button class="button-secondary" data-target="categories">Explore Categories</button>
+          </div>
+          <div class="stats-grid">
+            <div class="card"><strong>20k</strong><p>Star cadets enrolled</p></div>
+            <div class="card"><strong>85</strong><p>Orbital courses launched</p></div>
+            <div class="card"><strong>4.9/5</strong><p>Mission satisfaction</p></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-glow"></div>
+          <img class="planet" src="https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=900&q=80" alt="Futuristic planet scene" />
+        </div>
+      </div>
+    </section>
+
+    <section id="courses" class="tab-section">
+      <div class="section-heading">
+        <div>
+          <h2>Heroic Course Catalog</h2>
+          <p>Choose from six mission-ready courses that build career skills and technical confidence.</p>
+        </div>
+      </div>
+      <div class="cards course-grid">
+        <article class="card course-card primary-card">
+          <h3>Web Development</h3>
+          <p>Learn modern front-end and responsive design for polished digital experiences.</p>
+          <div class="course-meta"><span>Duration: 5h 30m</span><span>Level: Beginner</span></div>
+          <button class="button">Enroll</button>
+        </article>
+        <article class="card course-card">
+          <h3>Python Programming</h3>
+          <p>Build automation, data tools, and backend services with Python.</p>
+          <div class="course-meta"><span>Duration: 6h 10m</span><span>Level: Intermediate</span></div>
+          <button class="button">Enroll</button>
+        </article>
+        <article class="card course-card">
+          <h3>Data Science</h3>
+          <p>Analyze datasets, build dashboards, and unlock data-driven insights.</p>
+          <div class="course-meta"><span>Duration: 4h 50m</span><span>Level: Intermediate</span></div>
+          <button class="button">Enroll</button>
+        </article>
+        <article class="card course-card">
+          <h3>Artificial Intelligence</h3>
+          <p>Create intelligent models and decision systems for real-world use.</p>
+          <div class="course-meta"><span>Duration: 7h</span><span>Level: Advanced</span></div>
+          <button class="button">Enroll</button>
+        </article>
+        <article class="card course-card">
+          <h3>Cyber Security</h3>
+          <p>Secure networks, protect data, and think like a defender.</p>
+          <div class="course-meta"><span>Duration: 5h 40m</span><span>Level: Intermediate</span></div>
+          <button class="button">Enroll</button>
+        </article>
+        <article class="card course-card">
+          <h3>UI/UX Design</h3>
+          <p>Design interfaces with usability, accessibility, and futuristic polish.</p>
+          <div class="course-meta"><span>Duration: 4h 20m</span><span>Level: Beginner</span></div>
+          <button class="button">Enroll</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="categories" class="tab-section">
+      <div class="section-heading">
+        <div>
+          <h2>Learning Categories</h2>
+          <p>Pick a category that matches your strengths and future ambitions.</p>
+        </div>
+      </div>
+      <div class="cards category-grid">
+        <article class="card category-card"><span class="category-icon"></span><h3>Programming</h3><p>Write efficient code, launch apps, and solve complex problems.</p></article>
+        <article class="card category-card"><span class="category-icon"></span><h3>Design</h3><p>Create interfaces and experiences that feel futuristic and intuitive.</p></article>
+        <article class="card category-card"><span class="category-icon"></span><h3>Marketing</h3><p>Build campaigns, craft messages, and grow an audience with impact.</p></article>
+        <article class="card category-card"><span class="category-icon"></span><h3>Business</h3><p>Develop strategy, product thinking, and leadership for tech projects.</p></article>
+        <article class="card category-card"><span class="category-icon"></span><h3>AI & ML</h3><p>Train models, automate decisions, and design smart systems.</p></article>
+        <article class="card category-card"><span class="category-icon"></span><h3>Cloud Computing</h3><p>Deploy scalable solutions, maintain services, and optimize infrastructure.</p></article>
+      </div>
+    </section>
+
+    <section id="about" class="tab-section">
+      <div class="section-heading">
+        <div>
+          <h2>About Orbit Academy</h2>
+          <p>Our academy is built to help learners move from curiosity to confident expertise.</p>
+        </div>
+      </div>
+      <div class="cards feature-grid">
+        <article class="card feature-card"><h3>Mission</h3><p>Deliver immersive training that feels like a real space mission.</p></article>
+        <article class="card feature-card"><h3>Vision</h3><p>Create a launchpad for tomorrow's digital builders and innovators.</p></article>
+        <article class="card feature-card"><h3>Approach</h3><p>Blend practical projects, mentor feedback, and modern course design.</p></article>
+      </div>
+      <div class="section-heading">
+        <div>
+          <h2>Learning Journey</h2>
+          <p>Every learner follows a step-by-step process from discovery to deployment.</p>
+        </div>
+      </div>
+      <div class="cards course-grid">
+        <article class="card course-card"><h3>Explore</h3><p>Choose a path, set goals, and start with guided onboarding.</p></article>
+        <article class="card course-card"><h3>Build</h3><p>Complete projects, practice labs, and apply new skills immediately.</p></article>
+        <article class="card course-card"><h3>Launch</h3><p>Finish with portfolio work, certification, and career-ready outcomes.</p></article>
+      </div>
+      <div class="section-heading">
+        <div>
+          <h2>Instructor Team</h2>
+          <p>Meet our space-savvy mentors who guide every mission.</p>
+        </div>
+      </div>
+      <div class="cards instructor-grid">
+        <article class="card instructor-card"><h3>Nova Cruz</h3><p>UX mentor focused on immersive digital worlds and polished interfaces.</p></article>
+        <article class="card instructor-card"><h3>Orion Vega</h3><p>Technical lead with full-stack expertise in scalable systems.</p></article>
+        <article class="card instructor-card"><h3>Astra Lin</h3><p>AI strategist helping learners build practical machine learning models.</p></article>
+      </div>
+      <div class="stats-grid">
+        <div class="card"><strong>95%</strong><p>Graduation rate</p></div>
+        <div class="card"><strong>12k</strong><p>Cadets launched</p></div>
+        <div class="card"><strong>4.8/5</strong><p>Average course rating</p></div>
+      </div>
+    </section>
+
+    <section id="login" class="tab-section">
+      <div class="section-heading">
+        <div>
+          <h2>Member Login</h2>
+          <p>Sign in to access your cadet dashboard and active missions.</p>
+        </div>
+      </div>
+      <div class="cards">
+        <form class="card login-card" action="#" method="post">
+          <div class="form-field">
+            <label for="login-email">Email</label>
+            <input id="login-email" name="email" type="email" placeholder="you@orbitacademy.space" required />
+          </div>
+          <div class="form-field">
+            <label for="login-password">Password</label>
+            <input id="login-password" name="password" type="password" placeholder="Enter your password" required />
+          </div>
+          <div style="display:flex; gap:0.75rem; align-items:center; margin-top:0.5rem;">
+            <button class="button" type="submit">Sign In</button>
+            <a href="#contact" class="button-secondary">Contact Support</a>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
+    <section id="contact" class="tab-section">
+      <div class="section-heading">
+        <div>
+          <h2>Contact Mission Control</h2>
+          <p>Reach out to our team for questions, partnerships, or course guidance.</p>
+        </div>
+      </div>
+      <div class="section-split contact-grid">
+        <div class="card">
+          <h3>Mission Hub</h3>
+          <div class="course-meta"><span>Email</span><span>hello@orbitacademy.space</span></div>
+          <div class="course-meta"><span>Phone</span><span>+1 (800) 707-SPACE</span></div>
+          <div class="course-meta"><span>Address</span><span>432 Nebula Way, Skylab City</span></div>
+          <div class="course-meta"><span>Social</span><span>Twitter • LinkedIn • Discord</span></div>
+        </div>
+        <form id="contactForm" class="card" novalidate>
+          <div class="form-field">
+            <label for="contact-name">Name</label>
+            <input id="contact-name" type="text" placeholder="Cadet name" required />
+            <div class="error-message" id="error-name"></div>
+          </div>
+          <div class="form-field">
+            <label for="contact-email">Email</label>
+            <input id="contact-email" type="email" placeholder="you@orbitacademy.space" required />
+            <div class="error-message" id="error-email"></div>
+          </div>
+          <div class="form-field">
+            <label for="contact-subject">Subject</label>
+            <input id="contact-subject" type="text" placeholder="Mission subject" required />
+            <div class="error-message" id="error-subject"></div>
+          </div>
+          <div class="form-field">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" rows="5" placeholder="Tell us about your mission" required></textarea>
+            <div class="error-message" id="error-message"></div>
+          </div>
+          <button class="button" type="submit">Send Transmission</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Orbit Academy</h4>
+        <p>Space-themed learning with immersive missions, certificates, and future-ready skills built for explorers.</p>
+      </div>
+      <div>
+        <h4>Quick Links</h4>
+        <nav class="footer-links">
+          <a href="#home" data-target="home">Home</a>
+          <a href="#courses" data-target="courses">Courses</a>
+          <a href="#categories" data-target="categories">Categories</a>
+          <a href="#about" data-target="about">About</a>
+          <a href="#contact" data-target="contact">Contact</a>
+        </nav>
+      </div>
+      <div>
+        <h4>Galactic Features</h4>
+        <nav class="footer-links">
+          <a href="#courses" data-target="courses">Live Launch Labs</a>
+          <a href="#about" data-target="about">Space AI Assistant</a>
+          <a href="#about" data-target="about">Career Boost</a>
+          <a href="#contact" data-target="contact">Launch Support</a>
+        </nav>
+      </div>
+      <div>
+        <h4>Follow Us</h4>
+        <nav class="footer-links">
+          <a href="#">Twitter</a>
+          <a href="#">LinkedIn</a>
+          <a href="#">Discord</a>
+        </nav>
+      </div>
+      <div class="footer-bottom">© 2026 Orbit Academy • Privacy • Terms</div>
+    </div>
+  </footer>
+
+  <script>
+    const navLinks = document.querySelectorAll('.nav-link, footer a[data-target], .nav-actions [data-target], .hero-buttons [data-target]');
+    const sections = document.querySelectorAll('.tab-section');
+    const form = document.getElementById('contactForm');
+
+    function setActiveSection(sectionId) {
+      sections.forEach(section => {
+        section.classList.toggle('active-section', section.id === sectionId);
+      });
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.dataset.target === sectionId);
+      });
+    }
+
+    function handleNavClick(event) {
+      const target = event.currentTarget.dataset.target;
+      if (!target) return;
+      event.preventDefault();
+      setActiveSection(target);
+      document.getElementById(target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    navLinks.forEach(link => link.addEventListener('click', handleNavClick));
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      let valid = true;
+      const fields = {
+        name: document.getElementById('contact-name'),
+        email: document.getElementById('contact-email'),
+        subject: document.getElementById('contact-subject'),
+        message: document.getElementById('contact-message')
+      };
+
+      Object.keys(fields).forEach(key => {
+        const field = fields[key];
+        const error = document.getElementById(`error-${key}`);
+        field.classList.remove('error');
+        error.textContent = '';
+        if (!field.value.trim()) {
+          error.textContent = 'This field is required.';
+          field.classList.add('error');
+          valid = false;
+        }
+      });
+
+      const email = fields.email;
+      if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+        const error = document.getElementById('error-email');
+        error.textContent = 'Enter a valid email address.';
+        email.classList.add('error');
+        valid = false;
+      }
+
+      if (!valid) return;
+      alert('Message sent! Our mission control team will reply soon.');
+      form.reset();
+    });
+  </script>
+</body>
+</html>

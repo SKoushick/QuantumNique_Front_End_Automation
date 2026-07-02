@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Statistics Calculator</title>
+
+<link rel="stylesheet" href="statistics.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Statistics Calculator</h1>
+
+<textarea
+id="numbers"
+placeholder="Example: 10,20,30,40,50">
+</textarea>
+
+<button onclick="calculateStats()">
+
+Calculate
+
+</button>
+
+<div class="result">
+
+<p>Mean : <span id="mean"></span></p>
+
+<p>Median : <span id="median"></span></p>
+
+<p>Mode : <span id="mode"></span></p>
+
+<p>Range : <span id="range"></span></p>
+
+<p>Variance : <span id="variance"></span></p>
+
+<p>Standard Deviation : <span id="sd"></span></p>
+
+</div>
+
+</div>
+
+<script src="statistics.js"></script>
+
+</body>
+</html>

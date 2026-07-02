@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Math Quiz</title>
+
+<link rel="stylesheet" href="quiz.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Math Quiz</h1>
+
+<div class="difficulty">
+
+<button onclick="startQuiz('easy')">Easy</button>
+
+<button onclick="startQuiz('medium')">Medium</button>
+
+<button onclick="startQuiz('hard')">Hard</button>
+
+</div>
+
+<div class="quizBox">
+
+<h2 id="question">
+
+Select Difficulty
+
+</h2>
+
+<input
+type="number"
+id="answer"
+placeholder="Your Answer">
+
+<button onclick="checkAnswer()">
+
+Submit
+
+</button>
+
+<h3 id="result"></h3>
+
+<h3>
+
+Score :
+
+<span id="score">
+
+0
+
+</span>
+
+</h3>
+
+<h3>
+
+Question :
+
+<span id="current">
+
+0
+
+</span>
+
+/
+
+10
+
+</h3>
+
+<h3>
+
+Time :
+
+<span id="timer">
+
+30
+
+</span>
+
+</h3>
+
+<div class="progress">
+
+<div id="progressBar"></div>
+
+</div>
+
+<button onclick="restartQuiz()">
+
+Restart
+
+</button>
+
+</div>
+
+</div>
+
+<script src="quiz.js"></script>
+
+</body>
+</html>

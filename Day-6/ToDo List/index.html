@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith To-Do - Premium Productivity Suite</title>
+    <meta name="description" content="Zenith is a modern, responsive, and glassmorphic To-Do list application designed for premium productivity tracking with streaks, calendars, and live statistics.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader-content">
+            <div class="loader-logo">
+                <span class="logo-icon-wrap"><i data-lucide="check-circle" class="logo-icon"></i></span>
+                <span class="logo-text">Zenith</span>
+            </div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+            <p class="loader-tip">Organizing your space...</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="app-container">
+        
+        <!-- Sidebar -->
+        <aside class="app-sidebar" id="app-sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-icon-wrap"><i data-lucide="check-circle"></i></span>
+                    <span class="logo-text">Zenith</span>
+                </div>
+                <button class="sidebar-close-btn" id="sidebar-close-btn" aria-label="Close Sidebar">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <!-- Profile & Clock widget -->
+            <div class="profile-widget">
+                <div class="greeting-box">
+                    <span class="greeting-text" id="greeting-text">Good Morning</span>
+                    <h3 class="user-name">Productive Day!</h3>
+                </div>
+                <div class="time-box">
+                    <div class="live-time" id="live-time">00:00:00</div>
+                    <div class="live-date" id="live-date">Monday, January 1</div>
+                </div>
+            </div>
+
+            <!-- Productivity Stats (Streak & Quote) -->
+            <div class="productivity-widget">
+                <div class="streak-counter">
+                    <div class="streak-icon-wrap"><i data-lucide="flame"></i></div>
+                    <div class="streak-details">
+                        <span class="streak-count" id="streak-count">0</span>
+                        <span class="streak-label">Day Streak</span>
+                    </div>
+                </div>
+                <div class="productivity-score-box">
+                    <span class="score-label">Productivity Score:</span>
+                    <span class="score-value" id="productivity-score">0%</span>
+                </div>
+                <div class="quote-box">
+                    <p class="quote-text" id="quote-text">"The way to get started is to quit talking and begin doing."</p>
+                    <span class="quote-author" id="quote-author">- Walt Disney</span>
+                </div>
+            </div>
+
+            <!-- Navigation / Filters -->
+            <nav class="sidebar-nav">
+                <span class="nav-title">Smart Filters</span>
+                <ul class="nav-list">
+                    <li class="nav-item active" data-filter="all">
+                        <i data-lucide="inbox"></i>
+                        <span>Inbox</span>
+                        <span class="badge" id="badge-all">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="pinned">
+                        <i data-lucide="pin"></i>
+                        <span>Pinned</span>
+                        <span class="badge" id="badge-pinned">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="favorites">
+                        <i data-lucide="star"></i>
+                        <span>Favorites</span>
+                        <span class="badge" id="badge-favorites">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="today">
+                        <i data-lucide="calendar"></i>
+                        <span>Due Today</span>
+                        <span class="badge" id="badge-today">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="pending">
+                        <i data-lucide="clock"></i>
+                        <span>Pending</span>
+                        <span class="badge" id="badge-pending">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="completed">
+                        <i data-lucide="check-square"></i>
+                        <span>Completed</span>
+                        <span class="badge" id="badge-completed">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="overdue">
+                        <i data-lucide="alert-triangle"></i>
+                        <span>Overdue</span>
+                        <span class="badge" id="badge-overdue">0</span>
+                    </li>
+                    <li class="nav-item" data-filter="archived">
+                        <i data-lucide="archive"></i>
+                        <span>Archived</span>
+                        <span class="badge" id="badge-archived">0</span>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Custom Categories Section -->
+            <div class="sidebar-categories">
+                <div class="categories-header">
+                    <span class="nav-title">Categories</span>
+                    <button class="add-category-btn" id="add-category-btn" aria-label="Add Category">
+                        <i data-lucide="plus"></i>
+                    </button>
+                </div>
+                <ul class="categories-list" id="sidebar-categories-list">
+                    <!-- Categories will be generated dynamically -->
+                </ul>
+            </div>
+            
+            <div class="sidebar-footer">
+                <button class="sidebar-toggle-theme" id="sidebar-theme-toggle">
+                    <i data-lucide="sun" class="sun-icon"></i>
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <span class="theme-text">Toggle Theme</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            <!-- Top Bar -->
+            <header class="app-header">
+                <div class="header-left">
+                    <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" aria-label="Open Sidebar">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <!-- Search Bar -->
+                    <div class="search-container">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="search-input" placeholder="Search tasks, descriptions, tags..." aria-label="Search tasks">
+                        <span class="shortcut-hint">Ctrl + F</span>
+                    </div>
+                </div>
+
+                <div class="header-right">
+                    <!-- Stats Cards -->
+                    <div class="quick-stats">
+                        <div class="stat-card">
+                            <span class="stat-num" id="stat-total">0</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num text-success" id="stat-completed">0</span>
+                            <span class="stat-label">Done</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-num text-warning" id="stat-pending">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle & Help -->
+                    <div class="header-actions">
+                        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                            <i data-lucide="sun" class="sun-icon"></i>
+                            <i data-lucide="moon" class="moon-icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <section class="content-body">
+                <!-- Toolbar for sorting and bulk action actions -->
+                <div class="toolbar">
+                    <div class="toolbar-left">
+                        <h2 class="active-filter-title" id="active-filter-title">All Tasks</h2>
+                        <span class="task-count-subtitle" id="task-count-subtitle">0 tasks remaining</span>
+                    </div>
+
+                    <div class="toolbar-right">
+                        <!-- Sorting dropdown -->
+                        <div class="sort-container">
+                            <label for="sort-select" class="sort-label">Sort by</label>
+                            <div class="select-wrapper">
+                                <select id="sort-select" aria-label="Sort tasks">
+                                    <option value="order">Custom Order</option>
+                                    <option value="dueDate">Due Date</option>
+                                    <option value="priority">Priority</option>
+                                    <option value="alphabetical">Alphabetical</option>
+                                    <option value="createdAt">Date Created</option>
+                                    <option value="updatedAt">Recently Updated</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-add-task" id="btn-add-task-main">
+                            <i data-lucide="plus"></i>
+                            <span>Add Task</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Daily Progress section (visual card) -->
+                <div class="progress-section-card">
+                    <div class="progress-info">
+                        <div>
+                            <h4>Today's Productivity</h4>
+                            <p class="progress-sub">You have completed <span id="completed-today-count">0</span> tasks today.</p>
+                        </div>
+                        <div class="progress-percentage" id="progress-percentage-label">0%</div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Bulk Action Bar (Hidden by default, shown when tasks selected) -->
+                <div class="bulk-action-bar" id="bulk-action-bar">
+                    <div class="bulk-info">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="bulk-select-all">
+                            <span class="checkmark"></span>
+                        </label>
+                        <span class="selected-count" id="selected-count-label">0 selected</span>
+                    </div>
+                    <div class="bulk-buttons">
+                        <button class="btn-bulk text-success" id="bulk-complete" title="Mark Completed">
+                            <i data-lucide="check-square"></i>
+                            <span>Complete</span>
+                        </button>
+                        <button class="btn-bulk text-info" id="bulk-archive" title="Archive Tasks">
+                            <i data-lucide="archive"></i>
+                            <span>Archive</span>
+                        </button>
+                        <button class="btn-bulk text-accent" id="bulk-export" title="Export Selected">
+                            <i data-lucide="download"></i>
+                            <span>Export</span>
+                        </button>
+                        <button class="btn-bulk text-danger" id="bulk-delete" title="Delete Selected">
+                            <i data-lucide="trash-2"></i>
+                            <span>Delete</span>
+                        </button>
+                        <button class="btn-bulk btn-bulk-close" id="bulk-close" aria-label="Cancel Selection">
+                            <i data-lucide="x"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Task List Container -->
+                <div class="task-list-wrapper">
+                    <div class="task-list" id="task-list">
+                        <!-- Task cards will be generated dynamically -->
+                    </div>
+
+                    <!-- Empty State Container -->
+                    <div class="empty-state" id="empty-state">
+                        <div class="empty-illustration">
+                            <i data-lucide="clipboard-list" class="empty-icon"></i>
+                        </div>
+                        <h3>No tasks yet</h3>
+                        <p>Start being productive today by adding your first task!</p>
+                        <button class="btn btn-primary" id="btn-empty-state-add">Create Task</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="app-footer">
+                <p>Built with HTML, CSS & JavaScript | Zenith Premium Task Manager</p>
+            </footer>
+        </main>
+
+        <!-- Right Side Panel (Calendar & Productivity Tip) -->
+        <aside class="app-sidepanel" id="app-sidepanel">
+            <div class="sidepanel-header">
+                <h3>Calendar View</h3>
+            </div>
+            
+            <!-- Calendar Widget -->
+            <div class="calendar-widget">
+                <div class="calendar-header">
+                    <button class="cal-nav-btn" id="cal-prev" aria-label="Previous Month">
+                        <i data-lucide="chevron-left"></i>
+                    </button>
+                    <span class="cal-month-year" id="cal-month-year">June 2026</span>
+                    <button class="cal-nav-btn" id="cal-next" aria-label="Next Month">
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+                <div class="calendar-weekdays">
+                    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                </div>
+                <div class="calendar-days" id="calendar-days">
+                    <!-- Calendar days will be generated dynamically -->
+                </div>
+            </div>
+
+            <!-- Productivity Tip Section -->
+            <div class="tip-card">
+                <div class="tip-header">
+                    <i data-lucide="lightbulb" class="tip-icon"></i>
+                    <h4>Productivity Tip</h4>
+                </div>
+                <p class="tip-text" id="tip-text">Try grouping similar tasks together and executing them in batches. It minimizes context switching and boosts performance.</p>
+                <button class="tip-next-btn" id="tip-next-btn">Next Tip <i data-lucide="arrow-right"></i></button>
+            </div>
+
+            <!-- Import/Export Quick Widget -->
+            <div class="data-sync-widget">
+                <h4>Data Sync</h4>
+                <div class="sync-actions">
+                    <button class="sync-btn" id="btn-export-data">
+                        <i data-lucide="upload"></i>
+                        <span>Export All</span>
+                    </button>
+                    <label class="sync-btn" for="import-file-input">
+                        <i data-lucide="download"></i>
+                        <span>Import JSON</span>
+                    </label>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                </div>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Add/Edit Task Modal -->
+    <div class="modal-overlay" id="task-modal">
+        <div class="modal-container glass">
+            <div class="modal-header">
+                <h3 id="modal-title">Create New Task</h3>
+                <button class="modal-close" id="modal-close-task" aria-label="Close Modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="task-form" novalidate>
+                <input type="hidden" id="task-edit-id">
+                
+                <div class="form-group">
+                    <label for="task-title-input">Task Title <span class="required">*</span></label>
+                    <input type="text" id="task-title-input" placeholder="What needs to be done?" required autocomplete="off">
+                    <span class="error-message" id="error-task-title">Title cannot be empty.</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="task-desc-input">Description</label>
+                    <textarea id="task-desc-input" placeholder="Add some details about this task..." rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-category-select">Category</label>
+                        <select id="task-category-select">
+                            <option value="Personal">Personal</option>
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Fitness">Fitness</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Travel">Travel</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-priority-select">Priority</label>
+                        <select id="task-priority-select">
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-due-date">Due Date</label>
+                        <input type="date" id="task-due-date">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-due-time">Due Time</label>
+                        <input type="time" id="task-due-time">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="task-reminder">Reminder Time (Optional)</label>
+                        <input type="datetime-local" id="task-reminder">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="task-tags-input">Tags (Comma-separated)</label>
+                        <input type="text" id="task-tags-input" placeholder="e.g. urgent, health, project">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-task">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-submit-task">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Task Details Modal -->
+    <div class="modal-overlay" id="details-modal">
+        <div class="modal-container glass details-modal-container">
+            <div class="modal-header">
+                <h3>Task Details</h3>
+                <button class="modal-close" id="modal-close-details" aria-label="Close Modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="details-content">
+                <div class="details-top">
+                    <div class="details-status-badge" id="details-status-badge">Completed</div>
+                    <div class="details-priority-badge" id="details-priority-badge">High Priority</div>
+                </div>
+                
+                <h2 class="details-title" id="details-title">Task Title Placeholder</h2>
+                
+                <div class="details-category-pill" id="details-category-pill">
+                    <span class="cat-dot"></span>
+                    <span class="cat-name">Category</span>
+                </div>
+
+                <div class="details-section">
+                    <h4>Description</h4>
+                    <p class="details-description" id="details-description">No description provided.</p>
+                </div>
+
+                <div class="details-grid">
+                    <div class="details-grid-item">
+                        <span class="grid-label"><i data-lucide="calendar"></i> Created Date</span>
+                        <span class="grid-val" id="details-created">July 1, 2026</span>
+                    </div>
+                    <div class="details-grid-item">
+                        <span class="grid-label"><i data-lucide="calendar-check"></i> Due Date</span>
+                        <span class="grid-val" id="details-due">July 2, 2026 at 12:00 PM</span>
+                    </div>
+                    <div class="details-grid-item">
+                        <span class="grid-label"><i data-lucide="bell"></i> Reminder</span>
+                        <span class="grid-val" id="details-reminder">None</span>
+                    </div>
+                    <div class="details-grid-item">
+                        <span class="grid-label"><i data-lucide="tag"></i> Tags</span>
+                        <div class="details-tags-list" id="details-tags">
+                            <!-- Tags here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="btn-close-details">Close</button>
+                <button type="button" class="btn btn-primary" id="btn-edit-details">Edit Task</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Category Add Modal -->
+    <div class="modal-overlay" id="category-modal">
+        <div class="modal-container glass category-modal-container">
+            <div class="modal-header">
+                <h3>Add Custom Category</h3>
+                <button class="modal-close" id="modal-close-category" aria-label="Close Modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <form id="category-form" novalidate>
+                <div class="form-group">
+                    <label for="category-name-input">Category Name <span class="required">*</span></label>
+                    <input type="text" id="category-name-input" placeholder="e.g. Design, Home, Project X" required autocomplete="off">
+                    <span class="error-message" id="error-category-name">Name cannot be empty.</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="category-color-input">Category Color</label>
+                    <div class="color-picker-container">
+                        <input type="color" id="category-color-input" value="#a855f7">
+                        <span class="color-picker-value">#a855f7</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-category">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Action Button for Mobile -->
+    <button class="floating-action-btn" id="fab-add-task" aria-label="Add Task">
+        <i data-lucide="plus"></i>
+    </button>
+
+    <!-- Reminder Alert Popup (Custom Modal) -->
+    <div class="reminder-popup-overlay" id="reminder-popup">
+        <div class="reminder-popup glass">
+            <div class="reminder-popup-header">
+                <span class="reminder-bell"><i data-lucide="bell"></i></span>
+                <h3>Task Reminder!</h3>
+            </div>
+            <div class="reminder-popup-body">
+                <h4 id="reminder-task-title">Title of the task</h4>
+                <p id="reminder-task-desc">Short description of the task goes here.</p>
+                <span class="reminder-task-time" id="reminder-task-time">Due today at 10:00 AM</span>
+            </div>
+            <div class="reminder-popup-footer">
+                <button class="btn btn-secondary" id="btn-reminder-snooze">Snooze (5m)</button>
+                <button class="btn btn-primary" id="btn-reminder-dismiss">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Format Selector Modal -->
+    <div class="modal-overlay" id="export-modal">
+        <div class="modal-container glass export-modal-container">
+            <div class="modal-header">
+                <h3>Export Tasks</h3>
+                <button class="modal-close" id="modal-close-export" aria-label="Close Modal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="export-body">
+                <p>Choose your preferred export format. You can export all tasks or just the selected ones.</p>
+                <div class="export-format-options">
+                    <button class="export-format-card" data-format="json">
+                        <div class="format-icon"><i data-lucide="file-json"></i></div>
+                        <span class="format-name">JSON Format</span>
+                        <span class="format-desc">Recommended for backups and imports</span>
+                    </button>
+                    <button class="export-format-card" data-format="csv">
+                        <div class="format-icon"><i data-lucide="file-spreadsheet"></i></div>
+                        <span class="format-name">CSV Format</span>
+                        <span class="format-desc">Best for Excel and Google Sheets</span>
+                    </button>
+                    <button class="export-format-card" data-format="txt">
+                        <div class="format-icon"><i data-lucide="file-text"></i></div>
+                        <span class="format-name">TXT Format</span>
+                        <span class="format-desc">Simple text view of all tasks</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

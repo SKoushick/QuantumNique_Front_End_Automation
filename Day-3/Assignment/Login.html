@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Login • Orbit Academy</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .login-container { width:min(560px, 94%); padding:3rem; background:var(--surface); border-radius:18px; box-shadow:0 18px 48px rgba(0,0,0,0.08); }
+    .login-container h1{ margin:0 0 0.5rem; font-size:1.8rem; }
+    .login-note{ color:var(--muted); margin-bottom:1.25rem; }
+    .form-field{ margin-bottom:1rem; }
+    .login-actions{ display:flex; gap:0.75rem; align-items:center; margin-top:1rem; }
+    .small{ font-size:0.95rem; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="login-container">
+    <h1>Sign in to Orbit Academy</h1>
+    <p class="login-note">Enter your cadet credentials to access courses, labs, and your dashboard.</p>
+    <form action="#" method="post">
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="you@orbitacademy.space" required />
+      </div>
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="Your password" required />
+      </div>
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+        <label class="small"><input type="checkbox" name="remember" /> Remember me</label>
+        <a class="small" href="#">Forgot password?</a>
+      </div>
+      <div class="login-actions">
+        <button class="button" type="submit">Sign in</button>
+        <a class="button-secondary" href="A1.html">Back to site</a>
+      </div>
+    </form>
+  </main>
+</body>
+</html>
