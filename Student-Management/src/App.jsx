@@ -15,8 +15,6 @@ import AbsentStudents from './pages/AbsentStudents';
 import History from './pages/History';
 import Defaulters from './pages/Defaulters';
 import Reports from './pages/Reports';
-import Certificates from './pages/Certificates';
-import BulkImport from './pages/BulkImport';
 
 import { apiService } from './services/api';
 
@@ -33,7 +31,7 @@ export default function App() {
   const [notifications, setNotifications] = useState([
     { id: 1, message: 'Class reminder: DBMS today at 11:30 AM.', time: '09:00 AM', read: false },
     { id: 2, message: 'Low Attendance Alert: 4 students are currently below 75% in AI & DS.', time: 'Yesterday', read: false },
-    { id: 3, message: 'Welcome to Apex College Student Attendance System portal.', time: '2 days ago', read: true }
+    { id: 3, message: 'Welcome to Murugesan College Student Attendance System portal.', time: '2 days ago', read: true }
   ]);
 
   // Check login and theme on mount
@@ -162,20 +160,6 @@ export default function App() {
             triggerNotification={triggerNotification} 
           />
         );
-      case 'certificates':
-        return (
-          <Certificates 
-            currentTeacher={currentTeacher} 
-            triggerNotification={triggerNotification} 
-          />
-        );
-      case 'import':
-        return (
-          <BulkImport 
-            currentTeacher={currentTeacher} 
-            triggerNotification={triggerNotification} 
-          />
-        );
       default:
         return (
           <Dashboard 
@@ -193,9 +177,9 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 font-sans flex flex-col transition-colors duration-300">
       
-      {/* Interactive Collapsible Sidebar */}
+      {/* Top Navigation Bar */}
       <Sidebar 
         currentTeacher={currentTeacher} 
         activeTab={activeTab} 
@@ -205,40 +189,35 @@ export default function App() {
         onLogout={handleLogout} 
       />
 
-      {/* Main Panel Frame */}
-      <div className="flex-1 pl-80 transition-all duration-300 min-h-screen flex flex-col justify-between">
-        <div>
-          {/* Header Panel */}
-          <Header 
-            activeTab={activeTab} 
-            notifications={notifications} 
-            markAllNotificationsRead={markAllNotificationsRead} 
-          />
+      {/* Sub-Header Panel */}
+      <Header 
+        activeTab={activeTab} 
+        notifications={notifications} 
+        markAllNotificationsRead={markAllNotificationsRead} 
+      />
 
-          {/* Subpage View Container with page entry transition */}
-          <main className="pb-16">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
-              >
-                {renderActiveView()}
-              </motion.div>
-            </AnimatePresence>
-          </main>
-        </div>
+      {/* Full-Width Content Area */}
+      <main className="flex-1 pb-8">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+          >
+            {renderActiveView()}
+          </motion.div>
+        </AnimatePresence>
+      </main>
 
-        {/* Global Footer */}
-        <footer className="py-5 px-8 text-center text-[10px] text-slate-400 dark:text-slate-600 border-t border-slate-200/50 dark:border-slate-800/40 bg-white/30 dark:bg-slate-950/20 backdrop-blur-sm">
-          Apex College Student Attendance Management System • Developed for Faculty Workspace • © 2026 All Rights Reserved
-        </footer>
-      </div>
+      {/* Global Footer */}
+      <footer className="py-5 px-8 text-center text-[10px] text-slate-400 dark:text-slate-600 border-t border-slate-200/50 dark:border-slate-800/40 bg-white/30 dark:bg-slate-950/20 backdrop-blur-sm">
+        Murugesan College Student Attendance Management System • Developed for Faculty Workspace • © 2026 All Rights Reserved
+      </footer>
 
       {/* Floating Animated Toasts Panel */}
-      <div className="fixed top-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none">
+      <div className="fixed top-20 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none">
         <AnimatePresence>
           {toasts.map(toast => (
             <motion.div
@@ -249,7 +228,7 @@ export default function App() {
               transition={{ type: 'spring', damping: 15, stiffness: 200 }}
               className="pointer-events-auto bg-slate-900/95 dark:bg-white text-slate-100 dark:text-slate-900 px-4.5 py-3 rounded-2xl shadow-xl border border-slate-800/40 dark:border-slate-200/30 flex items-center space-x-3 backdrop-blur-md"
             >
-              <div className="h-6 w-6 bg-indigo-500/10 dark:bg-indigo-500/20 rounded-lg flex items-center justify-center text-indigo-500 dark:text-indigo-600 flex-shrink-0">
+              <div className="h-6 w-6 bg-teal-500/10 dark:bg-teal-500/20 rounded-lg flex items-center justify-center text-teal-500 dark:text-teal-600 flex-shrink-0">
                 <CheckCircle2 className="h-4.5 w-4.5" />
               </div>
               <span className="text-xs font-semibold tracking-tight">{toast.message}</span>

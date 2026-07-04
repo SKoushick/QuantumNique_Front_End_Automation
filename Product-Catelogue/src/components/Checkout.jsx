@@ -1,0 +1,799 @@
+import React, { useState, useEffect } from 'react';
+import { validators, validateForm } from '../utils/validation';
+import { createOrder } from '../utils/orders';
+import { getMembershipTier, applyTierBenefits } from '../utils/membership';
+
+export default function CheckoutComponent({ cartItems, user, onCheckoutComplete }) {
+  const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Review, 4: Confirmation
+  const [formErrors, setFormErrors] = useState({});
+  const [orderData, setOrderData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Shipping Form State
+  const [shipping, setShipping] = useState({
+    fullName: user?.name || '',
+    email: user?.email || '',
+    phone: '',
+    street: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'United States',
+    sameAsBilling: true
+  });
+
+  // Billing Form State
+  const [billing, setBilling] = useState({
+    fullName: '',
+    street: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: 'United States'
+  });
+
+  // Payment Form State
+  const [payment, setPayment] = useState({
+    method: 'card', // card, bank, crypto
+    cardName: user?.name || '',
+    cardNumber: '',
+    expiry: '',
+    cvv: '',
+    bankName: '',
+    accountNumber: '',
+    walletAddress: ''
+  });
+
+  // Calculate order summary
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.discountPrice || item.price;
+    return sum + (price * (item.quantity || 1));
+  }, 0);
+
+  const shipping_cost = subtotal > 1000 ? 0 : 50;
+  const tax = subtotal * 0.08;
+  let total = subtotal + shipping_cost + tax;
+
+  // Apply membership discount if applicable
+  const userTier = user ? getMembershipTier(user.totalSpending || 0) : null;
+  const memberDiscount = userTier ? subtotal * userTier.discount : 0;
+  total = (subtotal - memberDiscount) + shipping_cost + tax;
+
+  // Validation schemas
+  const shippingSchema = {
+    fullName: [validators.name],
+    email: [validators.email],
+    phone: [validators.phone],
+    street: [validators.address],
+    city: [validators.city],
+    state: [(v) => v ? { valid: true } : { valid: false, error: 'State required' }],
+    postalCode: [validators.postalCode]
+  };
+
+  const paymentSchema = {
+    cardName: payment.method === 'card' ? [validators.name] : [],
+    cardNumber: payment.method === 'card' ? [validators.creditCard] : [],
+    expiry: payment.method === 'card' ? [validators.expiryDate] : [],
+    cvv: payment.method === 'card' ? [validators.cvv] : []
+  };
+
+  // Handle shipping form submission
+  const handleShippingSubmit = (e) => {
+    e.preventDefault();
+    const validation = validateForm(shipping, shippingSchema);
+    
+    if (validation.isValid) {
+      setFormErrors({});
+      setStep(2);
+      window.scrollTo(0, 0);
+    } else {
+      setFormErrors(validation.errors);
+    }
+  };
+
+  // Handle payment form submission
+  const handlePaymentSubmit = (e) => {
+    e.preventDefault();
+    const paymentData = payment.method === 'card' ? payment : {};
+    const validation = validateForm(paymentData, paymentSchema);
+
+    if (validation.isValid) {
+      setFormErrors({});
+      setStep(3);
+      window.scrollTo(0, 0);
+    } else {
+      setFormErrors(validation.errors);
+    }
+  };
+
+  // Process order
+  const handlePlaceOrder = async () => {
+    setLoading(true);
+    try {
+      // Simulate payment processing delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const billingAddress = shipping.sameAsBilling ? shipping : billing;
+      
+      let order = createOrder(cartItems, user, shipping, {
+        method: payment.method,
+        last4: payment.method === 'card' ? payment.cardNumber.slice(-4) : '****'
+      });
+
+      // Apply membership tier discount
+      if (userTier) {
+        order = applyTierBenefits(order, userTier);
+      }
+
+      setOrderData(order);
+      setStep(4);
+      
+      // Call parent callback
+      if (onCheckoutComplete) {
+        onCheckoutComplete(order);
+      }
+
+      window.scrollTo(0, 0);
+    } catch (error) {
+      console.error('Order processing failed:', error);
+      setFormErrors({ general: 'Failed to process order. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="checkout-container">
+      <style>{`
+        .checkout-container {
+          max-width: 1000px;
+          margin: 40px auto;
+          padding: 20px;
+          background: var(--bg-main);
+          border-radius: var(--radius-lg);
+          color: var(--text-main);
+        }
+
+        .checkout-header {
+          display: flex;
+          gap: 20px;
+          margin-bottom: 40px;
+          border-bottom: 2px solid var(--border-color);
+          padding-bottom: 20px;
+        }
+
+        .step-indicator {
+          flex: 1;
+          text-align: center;
+          padding: 10px;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .step-indicator.active {
+          background: var(--c-gold-glow);
+          color: white;
+        }
+
+        .step-indicator.completed {
+          background: var(--border-color);
+          color: var(--text-muted);
+        }
+
+        .step-number {
+          display: inline-block;
+          width: 30px;
+          height: 30px;
+          background: var(--c-gold);
+          color: white;
+          border-radius: 50%;
+          line-height: 30px;
+          margin-right: 8px;
+        }
+
+        .step-indicator.active .step-number {
+          background: var(--c-gold);
+          box-shadow: 0 0 20px var(--c-gold-glow);
+        }
+
+        .checkout-content {
+          display: grid;
+          grid-template-columns: 1fr 350px;
+          gap: 30px;
+          margin-bottom: 40px;
+        }
+
+        .checkout-form {
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 30px;
+        }
+
+        .form-group {
+          margin-bottom: 20px;
+        }
+
+        .form-group label {
+          display: block;
+          margin-bottom: 8px;
+          font-weight: 500;
+          color: var(--text-main);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--bg-main);
+          color: var(--text-main);
+          font-size: 14px;
+          transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--c-gold);
+          box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .form-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 15px;
+        }
+
+        .form-error {
+          color: #ef4444;
+          font-size: 12px;
+          margin-top: 4px;
+        }
+
+        .form-group input.error,
+        .form-group select.error {
+          border-color: #ef4444;
+        }
+
+        .payment-methods {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 15px;
+          margin-bottom: 20px;
+        }
+
+        .payment-method {
+          padding: 15px;
+          border: 2px solid var(--border-color);
+          border-radius: 8px;
+          cursor: pointer;
+          text-align: center;
+          transition: all 0.3s ease;
+        }
+
+        .payment-method.active {
+          border-color: var(--c-gold);
+          background: rgba(245, 158, 11, 0.1);
+        }
+
+        .payment-method:hover {
+          border-color: var(--c-gold);
+        }
+
+        .order-summary {
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          padding: 20px;
+          position: sticky;
+          top: 100px;
+          height: fit-content;
+        }
+
+        .summary-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 15px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid var(--border-color);
+        }
+
+        .summary-item.total {
+          font-size: 18px;
+          font-weight: bold;
+          color: var(--c-gold);
+          border: none;
+          margin-top: 10px;
+          padding-top: 10px;
+        }
+
+        .cart-items {
+          max-height: 250px;
+          overflow-y: auto;
+          margin-bottom: 20px;
+        }
+
+        .cart-item {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+          padding-bottom: 10px;
+          border-bottom: 1px solid var(--border-color);
+          font-size: 13px;
+        }
+
+        .cart-item-image {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          border-radius: 4px;
+        }
+
+        .cart-item-details {
+          flex: 1;
+          overflow: hidden;
+        }
+
+        .cart-item-name {
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .checkout-buttons {
+          display: flex;
+          gap: 15px;
+          margin-top: 30px;
+        }
+
+        .btn-back {
+          flex: 1;
+          padding: 12px;
+          background: transparent;
+          border: 2px solid var(--border-color);
+          color: var(--text-main);
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+          border-color: var(--c-gold);
+          color: var(--c-gold);
+        }
+
+        .btn-next {
+          flex: 1;
+          padding: 12px;
+          background: linear-gradient(135deg, var(--c-gold), #FF8C00);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .btn-next:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-next:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        .confirmation-section {
+          text-align: center;
+          padding: 40px 20px;
+        }
+
+        .confirmation-icon {
+          font-size: 60px;
+          margin-bottom: 20px;
+        }
+
+        .confirmation-order-id {
+          font-size: 24px;
+          font-weight: bold;
+          color: var(--c-gold);
+          margin-bottom: 20px;
+          font-family: monospace;
+        }
+
+        .member-tier-badge {
+          display: inline-block;
+          padding: 8px 16px;
+          background: rgba(245, 158, 11, 0.2);
+          border: 1px solid var(--c-gold);
+          border-radius: 20px;
+          color: var(--c-gold);
+          font-size: 12px;
+          margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+          .checkout-content {
+            grid-template-columns: 1fr;
+          }
+
+          .order-summary {
+            position: static;
+          }
+
+          .form-row {
+            grid-template-columns: 1fr;
+          }
+
+          .payment-methods {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
+      {/* Header with Step Indicators */}
+      <div className="checkout-header">
+        {[1, 2, 3, 4].map((stepNum) => (
+          <div
+            key={stepNum}
+            className={`step-indicator ${step === stepNum ? 'active' : step > stepNum ? 'completed' : ''}`}
+            onClick={() => step > stepNum && setStep(stepNum)}
+          >
+            <span className="step-number">{step > stepNum ? '✓' : stepNum}</span>
+            <span>
+              {stepNum === 1 && 'Shipping'}
+              {stepNum === 2 && 'Payment'}
+              {stepNum === 3 && 'Review'}
+              {stepNum === 4 && 'Confirmed'}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Main Checkout Content */}
+      <div className="checkout-content">
+        {/* Form Section */}
+        <div>
+          {/* Step 1: Shipping Address */}
+          {step === 1 && (
+            <div className="checkout-form">
+              <h2>Shipping Address</h2>
+              <form onSubmit={handleShippingSubmit}>
+                <div className="form-group">
+                  <label>Full Name *</label>
+                  <input
+                    type="text"
+                    value={shipping.fullName}
+                    onChange={(e) => setShipping({ ...shipping, fullName: e.target.value })}
+                    className={formErrors.fullName ? 'error' : ''}
+                  />
+                  {formErrors.fullName && <div className="form-error">{formErrors.fullName}</div>}
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Email *</label>
+                    <input
+                      type="email"
+                      value={shipping.email}
+                      onChange={(e) => setShipping({ ...shipping, email: e.target.value })}
+                      className={formErrors.email ? 'error' : ''}
+                    />
+                    {formErrors.email && <div className="form-error">{formErrors.email}</div>}
+                  </div>
+                  <div className="form-group">
+                    <label>Phone *</label>
+                    <input
+                      type="tel"
+                      value={shipping.phone}
+                      onChange={(e) => setShipping({ ...shipping, phone: e.target.value })}
+                      className={formErrors.phone ? 'error' : ''}
+                    />
+                    {formErrors.phone && <div className="form-error">{formErrors.phone}</div>}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Street Address *</label>
+                  <input
+                    type="text"
+                    value={shipping.street}
+                    onChange={(e) => setShipping({ ...shipping, street: e.target.value })}
+                    className={formErrors.street ? 'error' : ''}
+                  />
+                  {formErrors.street && <div className="form-error">{formErrors.street}</div>}
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>City *</label>
+                    <input
+                      type="text"
+                      value={shipping.city}
+                      onChange={(e) => setShipping({ ...shipping, city: e.target.value })}
+                      className={formErrors.city ? 'error' : ''}
+                    />
+                    {formErrors.city && <div className="form-error">{formErrors.city}</div>}
+                  </div>
+                  <div className="form-group">
+                    <label>State *</label>
+                    <input
+                      type="text"
+                      value={shipping.state}
+                      onChange={(e) => setShipping({ ...shipping, state: e.target.value })}
+                      className={formErrors.state ? 'error' : ''}
+                    />
+                    {formErrors.state && <div className="form-error">{formErrors.state}</div>}
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Postal Code *</label>
+                    <input
+                      type="text"
+                      value={shipping.postalCode}
+                      onChange={(e) => setShipping({ ...shipping, postalCode: e.target.value })}
+                      className={formErrors.postalCode ? 'error' : ''}
+                    />
+                    {formErrors.postalCode && <div className="form-error">{formErrors.postalCode}</div>}
+                  </div>
+                  <div className="form-group">
+                    <label>Country</label>
+                    <select value={shipping.country} onChange={(e) => setShipping({ ...shipping, country: e.target.value })}>
+                      <option>United States</option>
+                      <option>Canada</option>
+                      <option>United Kingdom</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <input type="checkbox" id="same-billing" checked={shipping.sameAsBilling} onChange={(e) => setShipping({ ...shipping, sameAsBilling: e.target.checked })} />
+                  <label htmlFor="same-billing" style={{ display: 'inline', marginLeft: '8px' }}>Billing address same as shipping</label>
+                </div>
+
+                <div className="checkout-buttons">
+                  <button className="btn-next" type="submit">Continue to Payment</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Step 2: Payment Method */}
+          {step === 2 && (
+            <div className="checkout-form">
+              <h2>Payment Method</h2>
+              <div className="payment-methods">
+                <div className={`payment-method ${payment.method === 'card' ? 'active' : ''}`} onClick={() => setPayment({ ...payment, method: 'card' })}>
+                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>💳</div>
+                  <strong>Credit Card</strong>
+                </div>
+                <div className={`payment-method ${payment.method === 'bank' ? 'active' : ''}`} onClick={() => setPayment({ ...payment, method: 'bank' })}>
+                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🏦</div>
+                  <strong>Bank Transfer</strong>
+                </div>
+                <div className={`payment-method ${payment.method === 'crypto' ? 'active' : ''}`} onClick={() => setPayment({ ...payment, method: 'crypto' })}>
+                  <div style={{ fontSize: '24px', marginBottom: '8px' }}>₿</div>
+                  <strong>Cryptocurrency</strong>
+                </div>
+              </div>
+
+              <form onSubmit={handlePaymentSubmit}>
+                {payment.method === 'card' && (
+                  <>
+                    <div className="form-group">
+                      <label>Cardholder Name *</label>
+                      <input
+                        type="text"
+                        value={payment.cardName}
+                        onChange={(e) => setPayment({ ...payment, cardName: e.target.value })}
+                        className={formErrors.cardName ? 'error' : ''}
+                      />
+                      {formErrors.cardName && <div className="form-error">{formErrors.cardName}</div>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Card Number *</label>
+                      <input
+                        type="text"
+                        placeholder="1234 5678 9012 3456"
+                        value={payment.cardNumber}
+                        onChange={(e) => setPayment({ ...payment, cardNumber: e.target.value.replace(/\D/g, '').replace(/(\d{4})/g, '$1 ').trim() })}
+                        className={formErrors.cardNumber ? 'error' : ''}
+                      />
+                      {formErrors.cardNumber && <div className="form-error">{formErrors.cardNumber}</div>}
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Expiry Date *</label>
+                        <input
+                          type="text"
+                          placeholder="MM/YY"
+                          value={payment.expiry}
+                          onChange={(e) => {
+                            let val = e.target.value.replace(/\D/g, '');
+                            if (val.length >= 2) val = val.slice(0, 2) + '/' + val.slice(2, 4);
+                            setPayment({ ...payment, expiry: val });
+                          }}
+                          className={formErrors.expiry ? 'error' : ''}
+                        />
+                        {formErrors.expiry && <div className="form-error">{formErrors.expiry}</div>}
+                      </div>
+                      <div className="form-group">
+                        <label>CVV *</label>
+                        <input
+                          type="text"
+                          placeholder="123"
+                          value={payment.cvv}
+                          onChange={(e) => setPayment({ ...payment, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) })}
+                          className={formErrors.cvv ? 'error' : ''}
+                        />
+                        {formErrors.cvv && <div className="form-error">{formErrors.cvv}</div>}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {payment.method === 'bank' && (
+                  <>
+                    <div className="form-group">
+                      <label>Bank Name *</label>
+                      <input
+                        type="text"
+                        value={payment.bankName}
+                        onChange={(e) => setPayment({ ...payment, bankName: e.target.value })}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Account Number *</label>
+                      <input
+                        type="text"
+                        value={payment.accountNumber}
+                        onChange={(e) => setPayment({ ...payment, accountNumber: e.target.value })}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {payment.method === 'crypto' && (
+                  <div className="form-group">
+                    <label>Wallet Address *</label>
+                    <input
+                      type="text"
+                      placeholder="0x..."
+                      value={payment.walletAddress}
+                      onChange={(e) => setPayment({ ...payment, walletAddress: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                <div className="checkout-buttons">
+                  <button className="btn-back" type="button" onClick={() => setStep(1)}>Back</button>
+                  <button className="btn-next" type="submit">Review Order</button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          {/* Step 3: Review Order */}
+          {step === 3 && (
+            <div className="checkout-form">
+              <h2>Review Your Order</h2>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <h3>Shipping Address</h3>
+                <p>{shipping.fullName}</p>
+                <p>{shipping.street}</p>
+                <p>{shipping.city}, {shipping.state} {shipping.postalCode}</p>
+                <p>📞 {shipping.phone}</p>
+              </div>
+
+              <div style={{ marginBottom: '20px', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
+                <h3>Payment Method</h3>
+                {payment.method === 'card' && <p>💳 Card ending in {payment.cardNumber.slice(-4)}</p>}
+                {payment.method === 'bank' && <p>🏦 Bank Transfer via {payment.bankName}</p>}
+                {payment.method === 'crypto' && <p>₿ Cryptocurrency</p>}
+              </div>
+
+              <div style={{ marginBottom: '20px', paddingTop: '20px', borderTop: '1px solid var(--border-color)' }}>
+                <h3>Items ({cartItems.length})</h3>
+                {cartItems.map(item => (
+                  <div key={item.id} className="summary-item">
+                    <span>{item.name} x{item.quantity || 1}</span>
+                    <span>₹{((item.discountPrice || item.price) * (item.quantity || 1)).toLocaleString()}M</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="checkout-buttons">
+                <button className="btn-back" type="button" onClick={() => setStep(2)}>Back</button>
+                <button className="btn-next" onClick={handlePlaceOrder} disabled={loading}>
+                  {loading ? 'Processing...' : 'Place Order'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Order Confirmation */}
+          {step === 4 && orderData && (
+            <div className="checkout-form confirmation-section">
+              <div className="confirmation-icon">✅</div>
+              <h2>Order Confirmed!</h2>
+              <p style={{ fontSize: '16px', color: 'var(--text-muted)' }}>Thank you for your purchase</p>
+              <div className="confirmation-order-id">{orderData.id}</div>
+              
+              <p style={{ marginTop: '20px' }}>A confirmation email has been sent to <strong>{orderData.userEmail}</strong></p>
+              
+              <p style={{ marginTop: '15px', color: 'var(--text-muted)' }}>
+                Estimated Delivery: <strong>{new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toLocaleDateString()}</strong>
+              </p>
+
+              {userTier && (
+                <div className="member-tier-badge">
+                  {userTier.icon} {userTier.name} Member - {(memberDiscount).toLocaleString()}M Saved
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Order Summary Sidebar */}
+        <div className="order-summary">
+          <h3 style={{ marginBottom: '20px' }}>Order Summary</h3>
+          
+          <div className="cart-items">
+            {cartItems.map(item => (
+              <div key={item.id} className="cart-item">
+                {item.images?.[0] && <img src={item.images[0]} alt={item.name} className="cart-item-image" />}
+                <div className="cart-item-details">
+                  <div className="cart-item-name">{item.name}</div>
+                  <div style={{ color: 'var(--text-muted)' }}>x{item.quantity || 1}</div>
+                  <div style={{ fontWeight: 'bold', color: 'var(--c-gold)' }}>₹{((item.discountPrice || item.price) * (item.quantity || 1)).toLocaleString()}M</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="summary-item">
+            <span>Subtotal:</span>
+            <span>₹{subtotal.toLocaleString()}M</span>
+          </div>
+
+          {memberDiscount > 0 && (
+            <div className="summary-item" style={{ color: 'var(--c-gold)' }}>
+              <span>Member Discount ({(userTier.discount * 100)}%):</span>
+              <span>-₹{memberDiscount.toLocaleString()}M</span>
+            </div>
+          )}
+
+          <div className="summary-item">
+            <span>Shipping:</span>
+            <span>₹{shipping_cost.toLocaleString()}M</span>
+          </div>
+
+          <div className="summary-item">
+            <span>Tax (8%):</span>
+            <span>₹{tax.toLocaleString()}M</span>
+          </div>
+
+          <div className="summary-item total">
+            <span>Total:</span>
+            <span>₹{total.toLocaleString()}M</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

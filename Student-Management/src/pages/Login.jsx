@@ -38,17 +38,17 @@ export default function Login({ onLoginSuccess }) {
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-slate-900 text-slate-100 font-sans">
       {/* Dynamic Ambient Background Blobs */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/30 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/30 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-teal-600/30 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-600/30 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
 
       <div className="w-full max-w-md px-6 z-10">
         {/* Brand Logo Header */}
         <div className="text-center mb-8 flex flex-col items-center">
-          <div className="h-16 w-16 bg-gradient-to-tr from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-4 animate-bounce">
+          <div className="h-16 w-16 bg-gradient-to-tr from-teal-500 to-cyan-600 rounded-2xl flex items-center justify-center shadow-lg shadow-teal-500/20 mb-4 animate-bounce">
             <Shield className="h-8 w-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold tracking-tight text-white">
-            Apex College
+            Murugesan College
           </h2>
           <p className="text-sm text-slate-400 mt-2">
             Student Attendance Portal • Teacher Login
@@ -77,7 +77,7 @@ export default function Login({ onLoginSuccess }) {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   placeholder="Enter T1001 or email"
-                  className="w-full bg-slate-900/60 border border-slate-800/60 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-2xl pl-12 pr-4 py-3.5 text-slate-200 placeholder-slate-600 outline-none transition-all text-sm"
+                  className="w-full bg-slate-900/60 border border-slate-800/60 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 rounded-2xl pl-12 pr-4 py-3.5 text-slate-200 placeholder-slate-600 outline-none transition-all text-sm"
                   required
                 />
               </div>
@@ -97,7 +97,7 @@ export default function Login({ onLoginSuccess }) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-slate-900/60 border border-slate-800/60 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-2xl pl-12 pr-12 py-3.5 text-slate-200 placeholder-slate-600 outline-none transition-all text-sm"
+                  className="w-full bg-slate-900/60 border border-slate-800/60 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 rounded-2xl pl-12 pr-12 py-3.5 text-slate-200 placeholder-slate-600 outline-none transition-all text-sm"
                   required
                 />
                 <button
@@ -114,7 +114,7 @@ export default function Login({ onLoginSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full relative group overflow-hidden bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-medium py-4 px-6 rounded-2xl shadow-lg shadow-indigo-500/25 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center"
+              className="w-full relative group overflow-hidden bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white font-medium py-4 px-6 rounded-2xl shadow-lg shadow-teal-500/25 transition-all duration-300 transform active:scale-[0.98] flex items-center justify-center"
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
@@ -138,24 +138,24 @@ export default function Login({ onLoginSuccess }) {
             <div className="space-y-2">
               <button
                 onClick={() => handleQuickLogin('T1001', 'password123')}
-                className="w-full flex items-center justify-between text-left text-xs bg-slate-900/40 hover:bg-indigo-500/10 border border-slate-800 hover:border-indigo-500/30 px-4 py-3 rounded-xl transition-all"
+                className="w-full flex items-center justify-between text-left text-xs bg-slate-900/40 hover:bg-teal-500/10 border border-slate-800 hover:border-teal-500/30 px-4 py-3 rounded-xl transition-all"
               >
                 <div>
                   <p className="font-semibold text-slate-200">Mr. John (AI & DS Dept)</p>
                   <p className="text-[10px] text-slate-500">ID: T1001 / Pass: password123</p>
                 </div>
-                <span className="text-indigo-400 text-[10px] font-bold uppercase">Load</span>
+                <span className="text-teal-400 text-[10px] font-bold uppercase">Load</span>
               </button>
 
               <button
                 onClick={() => handleQuickLogin('sarah@college.edu', 'password123')}
-                className="w-full flex items-center justify-between text-left text-xs bg-slate-900/40 hover:bg-purple-500/10 border border-slate-800 hover:border-purple-500/30 px-4 py-3 rounded-xl transition-all"
+                className="w-full flex items-center justify-between text-left text-xs bg-slate-900/40 hover:bg-cyan-500/10 border border-slate-800 hover:border-cyan-500/30 px-4 py-3 rounded-xl transition-all"
               >
                 <div>
                   <p className="font-semibold text-slate-200">Mrs. Sarah (CSE Dept)</p>
                   <p className="text-[10px] text-slate-500">Email: sarah@college.edu / Pass: password123</p>
                 </div>
-                <span className="text-purple-400 text-[10px] font-bold uppercase">Load</span>
+                <span className="text-cyan-400 text-[10px] font-bold uppercase">Load</span>
               </button>
             </div>
           </div>

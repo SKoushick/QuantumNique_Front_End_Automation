@@ -67,7 +67,7 @@ export default function Defaulters({ currentTeacher, triggerNotification }) {
             placeholder="Search defaulter name or reg number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-indigo-500 dark:text-slate-200"
+            className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-teal-500 dark:text-slate-200"
           />
         </div>
 
@@ -78,7 +78,7 @@ export default function Defaulters({ currentTeacher, triggerNotification }) {
           <select
             value={filterDept}
             onChange={(e) => setFilterDept(e.target.value)}
-            className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-indigo-500 dark:text-slate-200 cursor-pointer"
+            className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl px-3 py-1.5 text-xs outline-none focus:border-teal-500 dark:text-slate-200 cursor-pointer"
           >
             <option value="">All Departments</option>
             {currentTeacher?.assignedDepartments?.map(d => (
@@ -108,7 +108,7 @@ export default function Defaulters({ currentTeacher, triggerNotification }) {
                 <div className="overflow-hidden">
                   <span className="text-sm font-bold text-slate-800 dark:text-white block truncate">{student.name}</span>
                   <span className="text-[10px] text-slate-400 block truncate">{student.department}</span>
-                  <span className="text-[9px] uppercase font-bold text-indigo-500 block mt-1 tracking-wider">
+                  <span className="text-[9px] uppercase font-bold text-teal-500 block mt-1 tracking-wider">
                     {student.year} • Sec {student.section}
                   </span>
                 </div>

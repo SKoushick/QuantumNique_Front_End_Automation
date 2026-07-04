@@ -237,7 +237,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
       {/* Dropdown Filters Portal */}
       <div className="glass-card rounded-3xl p-6 border border-slate-100 dark:border-slate-800 space-y-6">
         <div className="flex items-center space-x-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-          <SlidersHorizontal className="h-5 w-5 text-indigo-500" />
+          <SlidersHorizontal className="h-5 w-5 text-teal-500" />
           <h3 className="font-bold text-slate-800 dark:text-white text-base">Select Assigned Target Class</h3>
         </div>
 
@@ -248,7 +248,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
             <select
               value={selectedDept}
               onChange={(e) => setSelectedDept(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200"
             >
               <option value="">Select Department</option>
               {departments.map(d => (
@@ -264,7 +264,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
               value={selectedYear}
               disabled={!selectedDept}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Select Year</option>
               {years.map(y => (
@@ -280,7 +280,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
               value={selectedSection}
               disabled={!selectedYear}
               onChange={(e) => setSelectedSection(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Select Section</option>
               {sections.map(s => (
@@ -296,7 +296,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
               value={selectedSubject}
               disabled={!selectedSection}
               onChange={(e) => setSelectedSubject(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Select Subject</option>
               {subjects.map(sub => (
@@ -312,7 +312,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
               type="date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200"
             />
           </div>
         </div>
@@ -320,7 +320,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
         <button
           onClick={loadClassRoster}
           disabled={!selectedSubject || loading}
-          className="w-full md:w-auto bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full md:w-auto bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white font-semibold py-3 px-8 rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Initializing Roster...' : 'Load Student Roster'}
         </button>
@@ -353,13 +353,13 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
             </div>
 
             <div className="text-center md:border-r border-slate-100 dark:border-slate-800/50 py-1">
-              <span className="text-[10px] uppercase font-bold text-indigo-500 block mb-1">Leave (🔵)</span>
-              <span className="text-2xl font-bold text-indigo-500">{leaveCount}</span>
+              <span className="text-[10px] uppercase font-bold text-teal-500 block mb-1">Leave (🔵)</span>
+              <span className="text-2xl font-bold text-teal-500">{leaveCount}</span>
             </div>
 
             <div className="text-center py-1">
               <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Presence Ratio</span>
-              <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{presencePercentage}%</span>
+              <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{presencePercentage}%</span>
             </div>
           </div>
 
@@ -398,7 +398,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
 
             <button
               onClick={saveAttendance}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-md flex items-center space-x-2 transition-all active:scale-95"
+              className="bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow-md flex items-center space-x-2 transition-all active:scale-95"
             >
               <Save className="h-4 w-4" />
               <span>Save Attendance</span>
@@ -512,7 +512,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
                               onClick={() => handleStatusChange(student.id, 'Leave')}
                               className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border ${
                                 status === 'Leave'
-                                  ? 'bg-indigo-500 border-indigo-500 text-white shadow-sm shadow-indigo-500/20'
+                                  ? 'bg-teal-500 border-teal-500 text-white shadow-sm shadow-teal-500/20'
                                   : 'bg-transparent border-slate-200 dark:border-slate-700/80 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
                               }`}
                             >
@@ -534,7 +534,7 @@ export default function MarkAttendance({ currentTeacher, setActiveTab, setLastMa
       {/* Roster Unloaded Welcome Details */}
       {!classLoaded && (
         <div className="glass-card bg-slate-50 dark:bg-slate-800/10 rounded-3xl p-12 border border-slate-200/50 dark:border-slate-800/50 text-center max-w-xl mx-auto space-y-4">
-          <div className="h-14 w-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center mx-auto text-indigo-600 dark:text-indigo-400">
+          <div className="h-14 w-14 bg-teal-500/10 rounded-2xl flex items-center justify-center mx-auto text-teal-600 dark:text-teal-400">
             <Info className="h-7 w-7" />
           </div>
           <h4 className="font-bold text-slate-700 dark:text-slate-200">Load Class Attendance Sheet</h4>

@@ -8,7 +8,7 @@ export default function Certificates({ currentTeacher, triggerNotification }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  const [collegeName, setCollegeName] = useState('Apex College of Engineering & Technology');
+  const [collegeName, setCollegeName] = useState('Murugesan College of Engineering & Technology');
   const [academicYear, setAcademicYear] = useState('2025-2026');
 
   useEffect(() => {

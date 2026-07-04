@@ -23,7 +23,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
   const [exportFormat, setExportFormat] = useState('pdf'); // pdf, excel, csv
   
   // Custom college configurations
-  const [collegeName, setCollegeName] = useState('Apex College of Engineering & Technology');
+  const [collegeName, setCollegeName] = useState('Murugesan College of Engineering & Technology');
   const [logoBase64, setLogoBase64] = useState('');
 
   // Cascade dropdown arrays
@@ -170,7 +170,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
       const doc = new jsPDF();
       
       // Page styling parameters
-      const headerColor = [99, 102, 241]; // Indigo primary
+      const headerColor = [13, 148, 136]; // Teal primary
       
       // Document Header
       doc.setFillColor(248, 250, 252);
@@ -301,7 +301,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
           <style>
             body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 40px; color: #1e293b; }
             table { width: 100%; border-collapse: collapse; margin-top: 30px; }
-            .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #6366f1; padding-bottom: 20px; }
+            .header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #0d9488; padding-bottom: 20px; }
             .footer { display: flex; justify-content: space-between; margin-top: 80px; }
             .sig-line { width: 200px; border-top: 1px solid #94a3b8; text-align: center; padding-top: 8px; font-size: 10px; color: #94a3b8; }
           </style>
@@ -314,7 +314,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
               <p style="margin: 2px 0 0 0; font-size: 11px; color: #64748b;">${selectedYear} • Sec ${selectedSection} • Subject: ${selectedSubject}</p>
             </div>
             <div style="text-align: right;">
-              <h4 style="margin: 0 0 5px 0; color: #6366f1; text-transform: uppercase;">${reportType} Register</h4>
+              <h4 style="margin: 0 0 5px 0; color: #0d9488; text-transform: uppercase;">${reportType} Register</h4>
               <p style="margin: 0; font-size: 10px; color: #94a3b8;">Printed: ${new Date().toLocaleDateString()}</p>
             </div>
           </div>
@@ -356,7 +356,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
               <select
                 value={selectedDept}
                 onChange={(e) => setSelectedDept(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200"
               >
                 <option value="">Select Department</option>
                 {departments.map(d => (
@@ -371,7 +371,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                 value={selectedYear}
                 disabled={!selectedDept}
                 onChange={(e) => setSelectedYear(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Select Year</option>
                 {years.map(y => (
@@ -386,7 +386,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                 value={selectedSection}
                 disabled={!selectedYear}
                 onChange={(e) => setSelectedSection(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Select Section</option>
                 {sections.map(s => (
@@ -401,7 +401,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                 value={selectedSubject}
                 disabled={!selectedSection}
                 onChange={(e) => setSelectedSubject(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <option value="">Select Subject</option>
                 {subjects.map(sub => (
@@ -427,7 +427,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                       value={type.id}
                       checked={reportType === type.id}
                       onChange={() => setReportType(type.id)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                      className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300"
                     />
                     <span>{type.label}</span>
                   </label>
@@ -450,7 +450,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                       value={fmt.id}
                       checked={exportFormat === fmt.id}
                       onChange={() => setExportFormat(fmt.id)}
-                      className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-slate-300"
+                      className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300"
                     />
                     <span>{fmt.label}</span>
                   </label>
@@ -462,7 +462,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
           <div className="flex gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
             <button
               onClick={handleExport}
-              className="flex items-center justify-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-md transition-all active:scale-95"
+              className="flex items-center justify-center space-x-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-md transition-all active:scale-95"
             >
               <FileDown className="h-4.5 w-4.5" />
               <span>Download Document</span>
@@ -481,7 +481,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
         {/* Custom College Branding Customizer */}
         <div className="glass-card rounded-3xl p-6 border border-slate-100 dark:border-slate-800 space-y-6">
           <div className="flex items-center space-x-2 pb-4 border-b border-slate-100 dark:border-slate-800">
-            <Building className="h-5 w-5 text-indigo-500" />
+            <Building className="h-5 w-5 text-teal-500" />
             <h3 className="font-bold text-slate-800 dark:text-white text-base">College Branding settings</h3>
           </div>
 
@@ -493,7 +493,7 @@ export default function Reports({ currentTeacher, triggerNotification }) {
                 value={collegeName}
                 onChange={(e) => setCollegeName(e.target.value)}
                 placeholder="Enter college name"
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all dark:text-slate-200"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all dark:text-slate-200"
               />
             </div>
 

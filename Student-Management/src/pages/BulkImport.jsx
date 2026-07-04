@@ -127,7 +127,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
             <select
               value={selectedDept}
               onChange={(e) => setSelectedDept(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200"
             >
               <option value="">Select Department</option>
               {departments.map(d => (
@@ -142,7 +142,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
               value={selectedYear}
               disabled={!selectedDept}
               onChange={(e) => setSelectedYear(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Select Year</option>
               {years.map(y => (
@@ -157,7 +157,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
               value={selectedSection}
               disabled={!selectedYear}
               onChange={(e) => setSelectedSection(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-indigo-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-800/40 dark:border-slate-700/50 rounded-xl px-4 py-3 text-sm focus:border-teal-500 outline-none transition-all cursor-pointer dark:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option value="">Select Section</option>
               {sections.map(s => (
@@ -176,7 +176,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
             <h4 className="font-bold text-slate-800 dark:text-white text-sm">Upload CSV / Paste Data</h4>
             <button 
               onClick={downloadTemplate}
-              className="flex items-center space-x-1 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold uppercase hover:underline"
+              className="flex items-center space-x-1 text-[10px] text-teal-600 dark:text-teal-400 font-bold uppercase hover:underline"
             >
               <Download className="h-3 w-3" />
               <span>Get CSV Template</span>
@@ -204,7 +204,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
                 value={rawText}
                 onChange={(e) => setRawText(e.target.value)}
                 placeholder="Format: Name,Register Number,Roll Number,Parent Contact&#10;Alice,2025AD053,53,+919900000000"
-                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-850 dark:border-slate-700/50 rounded-xl p-3 text-xs outline-none focus:border-indigo-500 font-mono dark:text-slate-200 resize-y"
+                className="w-full bg-slate-50 border border-slate-200/80 dark:bg-slate-850 dark:border-slate-700/50 rounded-xl p-3 text-xs outline-none focus:border-teal-500 font-mono dark:text-slate-200 resize-y"
               ></textarea>
             </div>
 
@@ -222,7 +222,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
         <div className="glass-card rounded-3xl p-6 border border-slate-100 dark:border-slate-800 space-y-5 lg:col-span-2 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex items-center space-x-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-              <Table className="h-5 w-5 text-indigo-500" />
+              <Table className="h-5 w-5 text-teal-500" />
               <h4 className="font-bold text-slate-800 dark:text-white text-sm">Roster Import Preview ({parsedStudents.length} Students)</h4>
             </div>
 
@@ -262,7 +262,7 @@ export default function BulkImport({ currentTeacher, triggerNotification }) {
             <button
               onClick={saveImport}
               disabled={loading}
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-md flex items-center justify-center space-x-2 transition-all active:scale-95 mt-4"
+              className="bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm py-3 px-6 rounded-xl shadow-md flex items-center justify-center space-x-2 transition-all active:scale-95 mt-4"
             >
               <Save className="h-4.5 w-4.5" />
               <span>{loading ? 'Adding Students...' : 'Apply & Save Roster Roster'}</span>

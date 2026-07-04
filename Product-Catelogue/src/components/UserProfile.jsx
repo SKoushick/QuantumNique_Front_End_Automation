@@ -1,0 +1,144 @@
+import React, { useState } from 'react';
+import { saveUser, getPaintings, getWishlist, getCommissions } from '../utils/storage';
+
+const UserProfile = ({ currentUser, setCurrentUser, onSelectPainting }) => {
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({ ...currentUser });
+  const wishlistIds = getWishlist() || [];
+  const allPaintings = getPaintings() || [];
+  const wishlistPaintings = allPaintings.filter(p => wishlistIds.includes(p.id));
+  const commissions = (getCommissions() || []).filter(c => c.userId === currentUser?.id || c.email === currentUser?.email);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    saveUser(formData);
+    setCurrentUser(formData);
+    setEditMode(false);
+    alert('Profile updated successfully!');
+  };
+
+  const formatPrice = (p) => {
+    if (p >= 1000000) return `$${(p / 1000000).toFixed(1)}M`;
+    return `$${p.toLocaleString()}`;
+  };
+
+  if (!currentUser) {
+    return (
+      <div className="container profile-guest-view glass-card">
+        <h2>Profile Access</h2>
+        <p>Please sign in to view your collector profile, wishlist, and commission history.</p>
+      </div>
+    );
+  }
+
+  return (
+    <main className="profile-page container">
+      <h1>Collector Profile</h1>
+
+      {/* Profile Card */}
+      <section className="profile-card-section glass-card">
+        <div className="profile-card-layout">
+          <div className="profile-avatar-col">
+            <img src={currentUser.profilePic} alt={currentUser.name} className="profile-big-avatar" />
+            {currentUser.isAdmin && <span className="badge badge-in-stock">Curator</span>}
+          </div>
+
+          {editMode ? (
+            <form className="profile-edit-form" onSubmit={handleSave}>
+              <div className="form-grid-2col">
+                <div className="input-group">
+                  <label>Full Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} />
+                </div>
+                <div className="input-group">
+                  <label>Email Address</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} />
+                </div>
+                <div className="input-group">
+                  <label>Phone Number</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleChange} />
+                </div>
+                <div className="input-group">
+                  <label>Shipping Address</label>
+                  <input type="text" name="address" value={formData.address} onChange={handleChange} />
+                </div>
+              </div>
+              <div className="profile-edit-actions">
+                <button type="submit" className="gold-btn">Save Changes</button>
+                <button type="button" className="secondary-btn" onClick={() => setEditMode(false)}>Cancel</button>
+              </div>
+            </form>
+          ) : (
+            <div className="profile-info-display">
+              <h2>{currentUser.name}</h2>
+              <div className="profile-info-grid">
+                <div className="info-item"><span className="info-label">Email</span><span>{currentUser.email}</span></div>
+                <div className="info-item"><span className="info-label">Phone</span><span>{currentUser.phone || 'Not set'}</span></div>
+                <div className="info-item"><span className="info-label">Address</span><span>{currentUser.address || 'Not set'}</span></div>
+              </div>
+              <button className="secondary-btn" onClick={() => setEditMode(true)}>Edit Profile</button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Wishlist */}
+      <section className="profile-wishlist-section">
+        <h2>My Wishlist ({wishlistPaintings.length})</h2>
+        {wishlistPaintings.length > 0 ? (
+          <div className="wishlist-grid">
+            {wishlistPaintings.map(p => (
+              <div key={p.id} className="glass-card wishlist-card" onClick={() => onSelectPainting(p.id)}>
+                <img src={p.images[0]} alt={p.name} className="wishlist-thumb" />
+                <div className="wishlist-card-meta">
+                  <h4>{p.name}</h4>
+                  <span className="text-gold">{formatPrice(p.discountPrice || p.price)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card empty-section-card">
+            <p>Your wishlist is empty. Browse the gallery to bookmark your favorite masterpieces.</p>
+          </div>
+        )}
+      </section>
+
+      {/* Commission History */}
+      <section className="profile-commissions-section">
+        <h2>My Commission Requests ({commissions.length})</h2>
+        {commissions.length > 0 ? (
+          <div className="commissions-list">
+            {commissions.map(c => (
+              <div key={c.id} className="glass-card commission-history-card">
+                <div className="comm-header-row">
+                  <span className="comm-date">{c.date}</span>
+                  <span className={`badge ${c.status === 'Approved' ? 'badge-in-stock' : c.status === 'Rejected' ? 'badge-sold' : 'badge-low-stock'}`}>
+                    {c.status}
+                  </span>
+                </div>
+                <div className="comm-details-grid">
+                  <div><strong>Style:</strong> {c.style || 'Not specified'}</div>
+                  <div><strong>Medium:</strong> {c.medium}</div>
+                  <div><strong>Size:</strong> {c.size || 'Not specified'}</div>
+                  <div><strong>Budget:</strong> ${c.budget?.toLocaleString() || 'Flexible'}</div>
+                </div>
+                {c.notes && <p className="comm-notes">"{c.notes}"</p>}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="glass-card empty-section-card">
+            <p>No commission requests yet. Visit the artist page to request a custom painting.</p>
+          </div>
+        )}
+      </section>
+    </main>
+  );
+};
+
+export default UserProfile;

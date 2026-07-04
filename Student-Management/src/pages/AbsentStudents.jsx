@@ -96,7 +96,7 @@ export default function AbsentStudents({ currentTeacher, lastMarkedClass, trigge
               </div>
               <div className="text-center border-l border-slate-200 dark:border-slate-800 pl-6">
                 <span className="text-[10px] text-slate-400 font-bold uppercase block">On Approved Leave</span>
-                <span className="text-2xl font-bold text-indigo-500">{absentRoster.filter(s => s.status === 'Leave').length}</span>
+                <span className="text-2xl font-bold text-teal-500">{absentRoster.filter(s => s.status === 'Leave').length}</span>
               </div>
               <div className="text-center border-l border-slate-200 dark:border-slate-800 pl-6">
                 <span className="text-[10px] text-slate-400 font-bold uppercase block">Defaulters Alert</span>
@@ -115,7 +115,7 @@ export default function AbsentStudents({ currentTeacher, lastMarkedClass, trigge
                 placeholder="Search absent students..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-indigo-500 dark:text-slate-200"
+                className="w-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-xs outline-none focus:border-teal-500 dark:text-slate-200"
               />
             </div>
           </div>
@@ -186,7 +186,7 @@ export default function AbsentStudents({ currentTeacher, lastMarkedClass, trigge
                           <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg ${
                             student.status === 'Absent' 
                               ? 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300' 
-                              : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300'
+                              : 'bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300'
                           }`}>
                             {student.status}
                           </span>

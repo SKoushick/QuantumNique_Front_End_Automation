@@ -246,7 +246,7 @@ export default function History({ currentTeacher, triggerNotification }) {
             <div className="space-y-4">
               <div className="bg-slate-50 dark:bg-slate-800/40 p-4 rounded-2xl border border-slate-100/50 dark:border-slate-700/10">
                 <span className="text-[10px] text-slate-400 font-bold block">Selected Date</span>
-                <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-1 block">
+                <span className="text-sm font-bold text-teal-600 dark:text-teal-400 mt-1 block">
                   {new Date(selectedCalendarDate.date).toLocaleDateString('en-US', { dateStyle: 'full' })}
                 </span>
               </div>
@@ -310,7 +310,7 @@ export default function History({ currentTeacher, triggerNotification }) {
             return (
               <div key={index} className="relative">
                 {/* Bullet */}
-                <span className="absolute left-[-30px] top-1.5 h-4 w-4 bg-indigo-500 rounded-full border-4 border-white dark:border-slate-900 shadow-sm"></span>
+                <span className="absolute left-[-30px] top-1.5 h-4 w-4 bg-teal-500 rounded-full border-4 border-white dark:border-slate-900 shadow-sm"></span>
                 
                 <div>
                   <div className="flex items-center space-x-2">
@@ -320,7 +320,7 @@ export default function History({ currentTeacher, triggerNotification }) {
                     <span className="text-[10px] text-slate-400 font-mono">({audit.timestamp})</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Faculty <span className="font-semibold text-indigo-500">{audit.user}</span> saved attendance for <span className="font-semibold text-slate-700 dark:text-slate-300">{record.subject}</span> ({record.year} - Sec {record.section}).
+                    Faculty <span className="font-semibold text-teal-500">{audit.user}</span> saved attendance for <span className="font-semibold text-slate-700 dark:text-slate-300">{record.subject}</span> ({record.year} - Sec {record.section}).
                   </p>
                   <p className="text-[10px] text-slate-400 mt-1 bg-slate-50 dark:bg-slate-800/40 px-3 py-1.5 rounded-lg border border-slate-100/50 dark:border-slate-800/50 w-fit">
                     Statistics: <span className="text-emerald-500 font-semibold">{presents} Present</span>, <span className="text-rose-500 font-semibold">{absents} Absent</span>
@@ -351,7 +351,7 @@ export default function History({ currentTeacher, triggerNotification }) {
               placeholder="Search historical subject..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-800/30 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs outline-none focus:border-indigo-500 dark:text-slate-200"
+              className="w-full bg-slate-50 dark:bg-slate-800/30 border border-slate-200/80 dark:border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs outline-none focus:border-teal-500 dark:text-slate-200"
             />
           </div>
         </div>
@@ -418,7 +418,7 @@ export default function History({ currentTeacher, triggerNotification }) {
             onClick={() => { setViewMode('calendar'); setEditRecord(null); }}
             className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'calendar' 
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                ? 'bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-sm' 
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -430,7 +430,7 @@ export default function History({ currentTeacher, triggerNotification }) {
             onClick={() => { setViewMode('timeline'); setEditRecord(null); }}
             className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'timeline' 
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                ? 'bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-sm' 
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -442,7 +442,7 @@ export default function History({ currentTeacher, triggerNotification }) {
             onClick={() => { setViewMode('table'); setEditRecord(null); }}
             className={`flex items-center space-x-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all ${
               viewMode === 'table' 
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                ? 'bg-white dark:bg-slate-900 text-teal-600 dark:text-teal-400 shadow-sm' 
                 : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -460,7 +460,7 @@ export default function History({ currentTeacher, triggerNotification }) {
         <div className="glass-card rounded-3xl p-6 border border-slate-100 dark:border-slate-800 space-y-6">
           <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
             <div>
-              <span className="text-xs uppercase bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 font-bold px-2.5 py-1 rounded-lg">Attendance Editor</span>
+              <span className="text-xs uppercase bg-teal-100 text-teal-700 dark:bg-teal-500/20 dark:text-teal-300 font-bold px-2.5 py-1 rounded-lg">Attendance Editor</span>
               <h3 className="font-extrabold text-lg text-slate-800 dark:text-white mt-2">
                 Modifying {editRecord.subject} ({editRecord.date})
               </h3>
@@ -475,7 +475,7 @@ export default function History({ currentTeacher, triggerNotification }) {
               </button>
               <button
                 onClick={saveEditChanges}
-                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-all flex items-center space-x-1"
+                className="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-xl transition-all flex items-center space-x-1"
               >
                 <Save className="h-3.5 w-3.5" />
                 <span>Save Edits</span>
@@ -503,7 +503,7 @@ export default function History({ currentTeacher, triggerNotification }) {
                       if (st === 'Present') color = isActive ? 'bg-emerald-500 text-white border-emerald-500' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
                       else if (st === 'Absent') color = isActive ? 'bg-rose-500 text-white border-rose-500' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
                       else if (st === 'Late') color = isActive ? 'bg-amber-500 text-white border-amber-500' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
-                      else color = isActive ? 'bg-indigo-500 text-white border-indigo-500' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
+                      else color = isActive ? 'bg-teal-500 text-white border-teal-500' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800';
 
                       return (
                         <button

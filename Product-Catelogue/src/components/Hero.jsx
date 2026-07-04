@@ -1,0 +1,55 @@
+import React from 'react';
+
+const Hero = ({ onExplore, onMeetArtist }) => {
+  return (
+    <header className="hero-section">
+      {/* Background Banner with Starry Night Masterpiece */}
+      <div className="hero-bg-wrapper">
+        <div className="hero-overlay"></div>
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
+          alt="The Starry Night"
+          className="hero-banner-image"
+        />
+        
+        {/* Swirling Clouds overlay */}
+        <div className="hero-clouds">
+          <div className="cloud-layer layer-1"></div>
+          <div className="cloud-layer layer-2"></div>
+        </div>
+
+        {/* Animated stars overlay */}
+        <div className="hero-stars">
+          <div className="pulsing-star star-1" style={{ top: '15%', left: '20%', animationDelay: '0s' }}>✦</div>
+          <div className="pulsing-star star-2" style={{ top: '25%', left: '60%', animationDelay: '1s' }}>✦</div>
+          <div className="pulsing-star star-3" style={{ top: '10%', left: '75%', animationDelay: '2.5s' }}>✦</div>
+          <div className="pulsing-star star-4" style={{ top: '40%', left: '45%', animationDelay: '1.5s' }}>✦</div>
+          <div className="pulsing-star star-5" style={{ top: '30%', left: '85%', animationDelay: '0.5s' }}>✦</div>
+        </div>
+      </div>
+
+      {/* Cinematic Hero Content */}
+      <div className="hero-content container">
+        <div className="museum-label-hero fade-in-up">The Starry Night Inspiration</div>
+        <h1 className="hero-headline fade-in-up delay-1">
+          Every Painting <br />
+          <span className="gold-text-gradient">Tells a Story.</span>
+        </h1>
+        <p className="hero-subtitle fade-in-up delay-2">
+          Discover original artworks crafted with passion, emotional force, and deep imagination.
+        </p>
+        <div className="hero-btn-group fade-in-up delay-3">
+          <button className="gold-btn btn-lg" onClick={onExplore}>
+            Explore Gallery
+            <svg className="btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+          <button className="secondary-btn btn-lg" onClick={onMeetArtist}>
+            Meet the Artist
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Hero;

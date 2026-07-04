@@ -1,0 +1,533 @@
+import React, { useState } from 'react';
+
+export default function EnhancedUserProfile({ currentUser, orders, userProfile, membershipTier }) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    phone: currentUser?.phone || '',
+    bio: currentUser?.bio || '',
+    location: currentUser?.location || ''
+  });
+
+  return (
+    <div className="enhanced-profile">
+      <style>{`
+        .enhanced-profile {
+          max-width: 1000px;
+          margin: 40px auto;
+          padding: 20px;
+          background: var(--bg-main);
+          color: var(--text-main);
+        }
+
+        .profile-header {
+          display: flex;
+          gap: 30px;
+          align-items: flex-start;
+          padding: 30px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-lg);
+          margin-bottom: 30px;
+        }
+
+        .profile-avatar {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, var(--c-gold), #FF8C00);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 48px;
+          color: white;
+          flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+          margin: 0 0 5px 0;
+          font-size: 24px;
+        }
+
+        .profile-info p {
+          margin: 3px 0;
+          color: var(--text-muted);
+        }
+
+        .profile-badges {
+          display: flex;
+          gap: 10px;
+          margin-top: 15px;
+          flex-wrap: wrap;
+        }
+
+        .badge {
+          padding: 6px 12px;
+          background: rgba(245, 158, 11, 0.2);
+          border: 1px solid var(--c-gold);
+          border-radius: 20px;
+          font-size: 12px;
+          color: var(--c-gold);
+        }
+
+        .profile-tabs {
+          display: flex;
+          gap: 10px;
+          border-bottom: 2px solid var(--border-color);
+          margin-bottom: 30px;
+          overflow-x: auto;
+        }
+
+        .tab-btn {
+          padding: 12px 20px;
+          background: transparent;
+          border: none;
+          border-bottom: 3px solid transparent;
+          color: var(--text-muted);
+          cursor: pointer;
+          font-weight: 500;
+          white-space: nowrap;
+          transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+          color: var(--c-gold);
+          border-bottom-color: var(--c-gold);
+        }
+
+        .tab-btn:hover {
+          color: var(--text-main);
+        }
+
+        .tab-content {
+          animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+          gap: 20px;
+          margin-bottom: 30px;
+        }
+
+        .stat-box {
+          padding: 20px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          text-align: center;
+        }
+
+        .stat-number {
+          font-size: 32px;
+          font-weight: bold;
+          color: var(--c-gold);
+          margin-bottom: 5px;
+        }
+
+        .stat-label {
+          font-size: 13px;
+          color: var(--text-muted);
+        }
+
+        .order-card {
+          padding: 20px;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          border-radius: var(--radius-md);
+          margin-bottom: 15px;
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr 1fr;
+          gap: 15px;
+          align-items: center;
+        }
+
+        .order-id {
+          font-weight: bold;
+          font-family: monospace;
+          color: var(--c-gold);
+        }
+
+        .order-date {
+          color: var(--text-muted);
+          font-size: 13px;
+        }
+
+        .order-status {
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 12px;
+          font-weight: 500;
+          width: fit-content;
+        }
+
+        .status-pending {
+          background: rgba(234, 179, 8, 0.2);
+          color: #EAB308;
+        }
+
+        .status-processing {
+          background: rgba(59, 130, 246, 0.2);
+          color: #3B82F6;
+        }
+
+        .status-shipped {
+          background: rgba(139, 92, 246, 0.2);
+          color: #8B5CF6;
+        }
+
+        .status-delivered {
+          background: rgba(34, 197, 94, 0.2);
+          color: #22C55E;
+        }
+
+        .order-total {
+          font-size: 18px;
+          font-weight: bold;
+          color: var(--c-gold);
+        }
+
+        .achievements-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 15px;
+          margin-top: 20px;
+        }
+
+        .achievement {
+          padding: 20px;
+          background: var(--bg-card);
+          border: 2px solid var(--border-color);
+          border-radius: var(--radius-md);
+          text-align: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .achievement:hover {
+          border-color: var(--c-gold);
+          transform: translateY(-5px);
+          box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2);
+        }
+
+        .achievement-icon {
+          font-size: 40px;
+          margin-bottom: 10px;
+        }
+
+        .achievement-name {
+          font-size: 12px;
+          font-weight: bold;
+          color: var(--text-main);
+        }
+
+        .achievement-desc {
+          font-size: 11px;
+          color: var(--text-muted);
+          margin-top: 5px;
+        }
+
+        .edit-form {
+          display: grid;
+          gap: 20px;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .form-group label {
+          margin-bottom: 8px;
+          font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+          padding: 12px;
+          border: 1px solid var(--border-color);
+          border-radius: 6px;
+          background: var(--bg-main);
+          color: var(--text-main);
+          font-family: inherit;
+          transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--c-gold);
+          box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+        }
+
+        .edit-buttons {
+          display: flex;
+          gap: 15px;
+          margin-top: 20px;
+        }
+
+        .btn-save,
+        .btn-cancel,
+        .btn-edit {
+          padding: 12px 24px;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+          background: var(--c-gold);
+          color: white;
+          flex: 1;
+        }
+
+        .btn-save {
+          background: #22C55E;
+          color: white;
+          flex: 1;
+        }
+
+        .btn-cancel {
+          background: transparent;
+          border: 2px solid var(--border-color);
+          color: var(--text-main);
+          flex: 1;
+        }
+
+        .btn-edit:hover,
+        .btn-save:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-cancel:hover {
+          border-color: var(--c-gold);
+          color: var(--c-gold);
+        }
+
+        .empty-message {
+          text-align: center;
+          padding: 40px 20px;
+          color: var(--text-muted);
+        }
+
+        .empty-icon {
+          font-size: 48px;
+          margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+          .profile-header {
+            flex-direction: column;
+            text-align: center;
+          }
+
+          .order-card {
+            grid-template-columns: 1fr;
+          }
+
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+      `}</style>
+
+      {/* Profile Header */}
+      <div className="profile-header">
+        <div className="profile-avatar">👤</div>
+        <div className="profile-info">
+          <h2>{currentUser?.name || 'Collector'}</h2>
+          <p>{currentUser?.email}</p>
+          <div className="profile-badges">
+            <div className="badge">{membershipTier?.name || 'Collector'}</div>
+            <div className="badge">🌟 {currentUser?.purchasedPaintings?.length || 0} Artworks</div>
+            <div className="badge">💰 Member Since 2026</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs */}
+      <div className="profile-tabs">
+        <button className={`tab-btn ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
+          📊 Overview
+        </button>
+        <button className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>
+          📦 Order History ({orders?.length || 0})
+        </button>
+        <button className={`tab-btn ${activeTab === 'achievements' ? 'active' : ''}`} onClick={() => setActiveTab('achievements')}>
+          🏆 Achievements
+        </button>
+        <button className={`tab-btn ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+          ⚙️ Settings
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      <div className="tab-content">
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <>
+            <div className="stats-grid">
+              <div className="stat-box">
+                <div className="stat-number">${(currentUser?.totalSpending || 0).toLocaleString()}M</div>
+                <div className="stat-label">Total Spent</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-number">{orders?.length || 0}</div>
+                <div className="stat-label">Orders</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-number">{currentUser?.purchasedPaintings?.length || 0}</div>
+                <div className="stat-label">Paintings Owned</div>
+              </div>
+              <div className="stat-box">
+                <div className="stat-number">{membershipTier?.discount * 100 || 0}%</div>
+                <div className="stat-label">Member Discount</div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === 'orders' && (
+          <>
+            {orders && orders.length > 0 ? (
+              orders.map(order => (
+                <div key={order.id} className="order-card">
+                  <div>
+                    <div className="order-id">{order.id}</div>
+                    <div className="order-date">{new Date(order.createdAt).toLocaleDateString()}</div>
+                  </div>
+                  <div>
+                    <strong>{order.items.length} item(s)</strong>
+                    <p style={{ margin: '3px 0 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>
+                      {order.items.map(i => i.name).join(', ').substring(0, 30)}...
+                    </p>
+                  </div>
+                  <div>
+                    <div className={`order-status status-${order.status}`}>
+                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                    </div>
+                  </div>
+                  <div className="order-total">${order.total.toLocaleString()}M</div>
+                </div>
+              ))
+            ) : (
+              <div className="empty-message">
+                <div className="empty-icon">📭</div>
+                <p>No orders yet. Start building your collection!</p>
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Achievements Tab */}
+        {activeTab === 'achievements' && (
+          <>
+            <div className="achievements-grid">
+              <div className="achievement" title="First Purchase">
+                <div className="achievement-icon">🎯</div>
+                <div className="achievement-name">Collector</div>
+                <div className="achievement-desc">Made first purchase</div>
+              </div>
+              <div className="achievement" title="5 Paintings">
+                <div className="achievement-icon">🖼️</div>
+                <div className="achievement-name">Curator</div>
+                <div className="achievement-desc">Owned 5+ paintings</div>
+              </div>
+              <div className="achievement" title="Wishlist Master">
+                <div className="achievement-icon">💝</div>
+                <div className="achievement-name">Enthusiast</div>
+                <div className="achievement-desc">Added 10+ to wishlist</div>
+              </div>
+              <div className="achievement" title="Patron Status">
+                <div className="achievement-icon">👑</div>
+                <div className="achievement-name">Patron</div>
+                <div className="achievement-desc">Reached Patron tier</div>
+              </div>
+              <div className="achievement" title="Art Lover">
+                <div className="achievement-icon">😍</div>
+                <div className="achievement-name">Connoisseur</div>
+                <div className="achievement-desc">Reached Connoisseur tier</div>
+              </div>
+              <div className="achievement" title="Elite Status">
+                <div className="achievement-icon">💎</div>
+                <div className="achievement-name">Elite</div>
+                <div className="achievement-desc">Became Elite member</div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Settings Tab */}
+        {activeTab === 'settings' && (
+          <>
+            {!editMode ? (
+              <>
+                <div style={{ marginBottom: '20px' }}>
+                  <p><strong>Name:</strong> {formData.name}</p>
+                  <p><strong>Email:</strong> {formData.email}</p>
+                  <p><strong>Phone:</strong> {formData.phone || 'Not provided'}</p>
+                  <p><strong>Location:</strong> {formData.location || 'Not provided'}</p>
+                </div>
+                <button className="btn-edit" onClick={() => setEditMode(true)}>✏️ Edit Profile</button>
+              </>
+            ) : (
+              <div className="edit-form">
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input type="email" value={formData.email} disabled />
+                </div>
+                <div className="form-group">
+                  <label>Phone</label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Location</label>
+                  <input
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Bio</label>
+                  <textarea
+                    value={formData.bio}
+                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                    rows="4"
+                  />
+                </div>
+                <div className="edit-buttons">
+                  <button className="btn-save" onClick={() => setEditMode(false)}>✅ Save Changes</button>
+                  <button className="btn-cancel" onClick={() => setEditMode(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}

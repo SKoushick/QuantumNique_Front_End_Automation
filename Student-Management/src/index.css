@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
@@ -22,7 +22,7 @@
 
 /* Base Styles */
 body {
-  font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+  font-family: 'Inter', 'Space Grotesk', sans-serif;
   @apply bg-slate-50 text-slate-900 transition-colors duration-300;
 }
 
@@ -72,12 +72,12 @@ body.dark {
 }
 
 .glass-input {
-  @apply bg-white/40 dark:bg-slate-900/30 border border-slate-200/50 dark:border-slate-800/50 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 rounded-xl px-4 py-3 outline-none transition-all;
+  @apply bg-white/40 dark:bg-slate-900/30 border border-slate-200/50 dark:border-slate-800/50 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 rounded-xl px-4 py-3 outline-none transition-all;
 }
 
 /* Animations & Transitions */
 .animate-glow {
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 20px rgba(20, 184, 166, 0.15);
 }
 
 /* Print Overrides */

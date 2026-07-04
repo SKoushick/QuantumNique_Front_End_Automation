@@ -1,0 +1,594 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import './App.css';
+import {
+  initStorage, getPaintings, getTheme, setTheme as saveTheme,
+  getCurrentUser, setCurrentUser as saveCurrentUser,
+  getWishlist, setWishlist as saveWishlist,
+  getCart, setCart as saveCart,
+  getCompare, setCompare as saveCompare
+} from './utils/storage';
+import { getMembershipTier } from './utils/membership';
+import { advancedSearch, getPersonalizedRecommendations } from './utils/recommendations';
+
+import StarryBg from './components/StarryBg';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Footer from './components/Footer';
+import FilterSidebar from './components/FilterSidebar';
+import PaintingCard from './components/PaintingCard';
+import QuickViewModal from './components/QuickViewModal';
+import PaintingDetails from './components/PaintingDetails';
+import CompareSection from './components/CompareSection';
+import ArtistPage from './components/ArtistPage';
+import EnhancedUserProfile from './components/EnhancedUserProfile';
+import AdminDashboard from './components/AdminDashboard';
+import AuthModal from './components/AuthModal';
+import ReviewsSection from './components/ReviewsSection';
+import Checkout from './components/Checkout';
+function App() {
+  // Global State — declared FIRST so useEffects below can safely reference them
+  const [theme, setThemeState] = useState(getTheme());
+  const [activePage, setActivePage] = useState('home');
+  const [paintings, setPaintings] = useState([]);
+  const [currentUser, setCurrentUserState] = useState(getCurrentUser());
+  const [wishlist, setWishlistState] = useState(getWishlist());
+  const [cart, setCartState] = useState(getCart());
+  const [compareList, setCompareState] = useState(getCompare());
+
+  // Search & Filter State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('grid');
+  const [sortBy, setSortBy] = useState('default');
+  const [priceRange, setPriceRange] = useState(150000000);
+  const [selectedMediums, setSelectedMediums] = useState([]);
+  const [selectedStyles, setSelectedStyles] = useState([]);
+  const [selectedOrientations, setSelectedOrientations] = useState([]);
+  const [selectedAvailability, setSelectedAvailability] = useState([]);
+  const [minRating, setMinRating] = useState(null);
+
+  // UI State
+  const [showAuth, setShowAuth] = useState(false);
+  const [quickViewPainting, setQuickViewPainting] = useState(null);
+  const [selectedPaintingId, setSelectedPaintingId] = useState(null);
+  const [showCartDrawer, setShowCartDrawer] = useState(false);
+
+  // New Features State
+  const [orders, setOrders] = useState([]);
+  const [userProfile, setUserProfile] = useState({
+    viewedPaintings: [],
+    purchasedPaintings: [],
+    wishedPaintings: [],
+    totalSpending: 0,
+    membershipTier: null
+  });
+  const [recommendedPaintings, setRecommendedPaintings] = useState([]);
+
+  // Initialize localStorage on first load
+  useEffect(() => {
+    initStorage();
+    setPaintings(getPaintings() || []);
+  }, []);
+
+  // Calculate personalized recommendations whenever user profile or paintings change
+  useEffect(() => {
+    if (paintings.length > 0 && currentUser) {
+      const enhancedProfile = {
+        ...userProfile,
+        viewedPaintings: currentUser.viewedPaintings || [],
+        purchasedPaintings: currentUser.purchasedPaintings || [],
+        wishedPaintings: wishlist
+      };
+      const recs = getPersonalizedRecommendations(paintings, enhancedProfile);
+      setRecommendedPaintings(recs);
+    }
+  }, [paintings, currentUser, wishlist]);
+
+  // Theme Management
+  const setTheme = (t) => {
+    setThemeState(t);
+    saveTheme(t);
+  };
+
+  // User Session
+  const handleLoginSuccess = (user) => {
+    setCurrentUserState(user);
+    saveCurrentUser(user);
+  };
+
+  const handleLogout = () => {
+    setCurrentUserState(null);
+    localStorage.removeItem('starry_gallery_current_user');
+  };
+
+  // Wishlist
+  const toggleWishlist = (id) => {
+    let updated;
+    if (wishlist.includes(id)) {
+      updated = wishlist.filter(i => i !== id);
+    } else {
+      updated = [...wishlist, id];
+    }
+    setWishlistState(updated);
+    saveWishlist(updated);
+  };
+
+  // Compare
+  const toggleCompare = (id) => {
+    let updated;
+    if (compareList.includes(id)) {
+      updated = compareList.filter(i => i !== id);
+    } else {
+      if (compareList.length >= 3) {
+        alert('You can compare up to 3 paintings at a time.');
+        return;
+      }
+      updated = [...compareList, id];
+    }
+    setCompareState(updated);
+    saveCompare(updated);
+  };
+
+  const removeCompare = (id) => {
+    const updated = compareList.filter(i => i !== id);
+    setCompareState(updated);
+    saveCompare(updated);
+  };
+
+  // Cart
+  const addToCart = (painting) => {
+    if (painting.availability === 'Sold') return;
+    const existing = cart.find(item => item.id === painting.id);
+    let updated;
+    if (existing) {
+      updated = cart.map(item => item.id === painting.id ? { ...item, quantity: item.quantity + 1 } : item);
+    } else {
+      updated = [...cart, { id: painting.id, name: painting.name, price: painting.discountPrice || painting.price, quantity: 1, image: painting.images[0] }];
+    }
+    setCartState(updated);
+    saveCart(updated);
+    setShowCartDrawer(true);
+  };
+
+  const removeFromCart = (id) => {
+    const updated = cart.filter(item => item.id !== id);
+    setCartState(updated);
+    saveCart(updated);
+  };
+
+  // Checkout completion handler
+  const handleCheckoutComplete = (order) => {
+    // Add order to history
+    setOrders([...orders, order]);
+    
+    // Update user profile with purchase info
+    const updatedProfile = {
+      ...userProfile,
+      purchasedPaintings: [...(userProfile.purchasedPaintings || []), ...order.items.map(i => i.paintingId)],
+      totalSpending: (userProfile.totalSpending || 0) + order.total
+    };
+    
+    // Update membership tier
+    const newTier = getMembershipTier(updatedProfile.totalSpending);
+    updatedProfile.membershipTier = newTier;
+    
+    setUserProfile(updatedProfile);
+    
+    // Clear cart
+    setCartState([]);
+    saveCart([]);
+    
+    // Show success message
+    setTimeout(() => {
+      setActivePage('home');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 2000);
+  };
+
+  // Navigation
+  const navigateToGallery = () => {
+    setActivePage('gallery');
+    setSelectedPaintingId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToArtist = () => {
+    setActivePage('artist');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const selectPainting = (id) => {
+    setSelectedPaintingId(id);
+    setActivePage('details');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Refresh paintings from storage (after admin CRUD)
+  const refreshPaintings = () => {
+    setPaintings(getPaintings() || []);
+  };
+
+  // Reset all filters
+  const resetFilters = () => {
+    setSearchQuery('');
+    setPriceRange(150000000);
+    setSelectedMediums([]);
+    setSelectedStyles([]);
+    setSelectedOrientations([]);
+    setSelectedAvailability([]);
+    setMinRating(null);
+    setSortBy('default');
+  };
+
+  // Filtered & Sorted Paintings
+  const filteredPaintings = useMemo(() => {
+    let result = [...paintings];
+
+    // Search
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.sku.toLowerCase().includes(q) ||
+        p.artist.toLowerCase().includes(q) ||
+        p.medium.toLowerCase().includes(q) ||
+        p.collection.toLowerCase().includes(q) ||
+        p.style.toLowerCase().includes(q) ||
+        (p.subcategory && p.subcategory.toLowerCase().includes(q))
+      );
+    }
+
+    // Price
+    result = result.filter(p => (p.discountPrice || p.price) <= priceRange);
+
+    // Mediums
+    if (selectedMediums.length > 0) {
+      result = result.filter(p => selectedMediums.includes(p.medium));
+    }
+
+    // Styles
+    if (selectedStyles.length > 0) {
+      result = result.filter(p => selectedStyles.includes(p.style) || selectedStyles.includes(p.subcategory));
+    }
+
+    // Orientations
+    if (selectedOrientations.length > 0) {
+      result = result.filter(p => selectedOrientations.includes(p.specifications.orientation));
+    }
+
+    // Availability
+    if (selectedAvailability.length > 0) {
+      result = result.filter(p => selectedAvailability.includes(p.availability));
+    }
+
+    // Rating
+    if (minRating) {
+      result = result.filter(p => p.rating >= minRating);
+    }
+
+    // Sorting
+    if (sortBy === 'price-low') {
+      result.sort((a, b) => (a.discountPrice || a.price) - (b.discountPrice || b.price));
+    } else if (sortBy === 'price-high') {
+      result.sort((a, b) => (b.discountPrice || b.price) - (a.discountPrice || a.price));
+    }
+
+    return result;
+  }, [paintings, searchQuery, priceRange, selectedMediums, selectedStyles, selectedOrientations, selectedAvailability, minRating, sortBy]);
+
+  const formatPrice = (p) => {
+    if (p >= 1000000) return `₹${(p / 1000000).toFixed(1)}M`;
+    return `₹${p.toLocaleString()}`;
+  };
+
+  return (
+    <div className={`app-root theme-${theme}`}>
+      <StarryBg theme={theme} />
+
+      <Navbar
+        theme={theme}
+        setTheme={setTheme}
+        activePage={activePage}
+        setActivePage={(page) => { setActivePage(page); setSelectedPaintingId(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+        wishlist={wishlist}
+        compareList={compareList}
+        cart={cart}
+        currentUser={currentUser}
+        onLogout={handleLogout}
+        onOpenAuth={() => setShowAuth(true)}
+        onOpenCart={() => setShowCartDrawer(!showCartDrawer)}
+        searchQuery={searchQuery}
+        setSearchQuery={(q) => { setSearchQuery(q); if (q.trim() && activePage !== 'gallery') setActivePage('gallery'); }}
+        paintings={paintings}
+      />
+
+      {/* Cart Drawer */}
+      {showCartDrawer && (
+        <div className="cart-drawer glass-panel">
+          <div className="cart-drawer-header">
+            <h3>Shopping Cart</h3>
+            <button className="close-modal-btn" onClick={() => setShowCartDrawer(false)}>&times;</button>
+          </div>
+          {cart.length === 0 ? (
+            <p className="cart-empty-msg">Your cart is empty. Browse the gallery to add paintings.</p>
+          ) : (
+            <>
+              <div className="cart-items-list">
+                {cart.map(item => (
+                  <div key={item.id} className="cart-item">
+                    <img src={item.image} alt={item.name} className="cart-item-thumb" />
+                    <div className="cart-item-meta">
+                      <h4>{item.name}</h4>
+                      <span className="text-gold">{formatPrice(item.price)} × {item.quantity}</span>
+                    </div>
+                    <button className="remove-cart-btn" onClick={() => removeFromCart(item.id)}>&times;</button>
+                  </div>
+                ))}
+              </div>
+              <div className="cart-total-row">
+                <span>Total:</span>
+                <span className="text-gold font-bold">{formatPrice(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}</span>
+              </div>
+              <button className="gold-btn btn-full" onClick={() => alert('Checkout functionality coming soon!')}>
+                Proceed to Checkout
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Quick View Modal */}
+      {quickViewPainting && (
+        <QuickViewModal
+          painting={quickViewPainting}
+          onClose={() => setQuickViewPainting(null)}
+          onSelect={selectPainting}
+          onAddToCart={addToCart}
+        />
+      )}
+
+      {/* Auth Modal */}
+      {showAuth && (
+        <AuthModal
+          onClose={() => setShowAuth(false)}
+          onLoginSuccess={handleLoginSuccess}
+        />
+      )}
+
+      {/* Page Routing */}
+      <div className="main-content">
+        {/* HOME */}
+        {activePage === 'home' && (
+          <>
+            <Hero onExplore={navigateToGallery} onMeetArtist={navigateToArtist} />
+
+            {/* Featured Collection Preview */}
+            <section className="home-featured container">
+              <div className="section-header">
+                <span className="museum-label">Curated Selection</span>
+                <h2>Featured Masterpieces</h2>
+                <p className="section-subtitle">Hand-selected originals from the Celestial Works and Floral Symphony collections.</p>
+              </div>
+              <div className="gallery-grid">
+                {paintings.slice(0, 3).map(p => (
+                  <PaintingCard
+                    key={p.id}
+                    painting={p}
+                    viewMode="grid"
+                    onSelect={selectPainting}
+                    onQuickView={setQuickViewPainting}
+                    wishlist={wishlist}
+                    onToggleWishlist={toggleWishlist}
+                    compareList={compareList}
+                    onToggleCompare={toggleCompare}
+                    onAddToCart={addToCart}
+                  />
+                ))}
+              </div>
+              <div className="section-cta">
+                <button className="gold-btn btn-lg" onClick={navigateToGallery}>View Full Exhibition →</button>
+              </div>
+            </section>
+
+            {/* Collections Banner */}
+            <section className="home-collections container">
+              <div className="section-header">
+                <span className="museum-label">Browse Collections</span>
+                <h2>Exhibition Collections</h2>
+              </div>
+              <div className="collections-grid">
+                {[...new Set(paintings.map(p => p.collection))].map(col => {
+                  const colPainting = paintings.find(p => p.collection === col);
+                  return (
+                    <div key={col} className="collection-card glass-card" onClick={() => { setSearchQuery(col); setActivePage('gallery'); }}>
+                      <div className="frame-container collection-frame">
+                        <img src={colPainting?.images[0]} alt={col} className="zoom-img" />
+                      </div>
+                      <h3>{col}</h3>
+                      <p>{paintings.filter(p => p.collection === col).length} Artworks</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+          </>
+        )}
+
+        {/* GALLERY */}
+        {activePage === 'gallery' && (
+          <section className="gallery-page container">
+            <div className="gallery-page-header">
+              <div>
+                <span className="museum-label">Exhibition Catalogue</span>
+                <h1>Art Gallery</h1>
+                <p className="section-subtitle">{filteredPaintings.length} artworks on display</p>
+              </div>
+              <div className="gallery-view-controls">
+                <div className="sort-select-wrapper">
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="sort-select">
+                    <option value="default">Default Order</option>
+                    <option value="price-low">Price: Low → High</option>
+                    <option value="price-high">Price: High → Low</option>
+                  </select>
+                </div>
+                <div className="view-toggle-group">
+                  <button className={`view-toggle-btn ${viewMode === 'grid' ? 'active' : ''}`} onClick={() => setViewMode('grid')} title="Grid View">▦</button>
+                  <button className={`view-toggle-btn ${viewMode === 'list' ? 'active' : ''}`} onClick={() => setViewMode('list')} title="List View">☰</button>
+                </div>
+              </div>
+            </div>
+
+            <div className="gallery-layout">
+              <FilterSidebar
+                priceRange={priceRange} setPriceRange={setPriceRange}
+                selectedMediums={selectedMediums} setSelectedMediums={setSelectedMediums}
+                selectedStyles={selectedStyles} setSelectedStyles={setSelectedStyles}
+                selectedOrientations={selectedOrientations} setSelectedOrientations={setSelectedOrientations}
+                selectedAvailability={selectedAvailability} setSelectedAvailability={setSelectedAvailability}
+                minRating={minRating} setMinRating={setMinRating}
+                onReset={resetFilters}
+              />
+
+              <div className="gallery-main-content">
+                {filteredPaintings.length === 0 ? (
+                  <div className="gallery-empty glass-card">
+                    <h3>No paintings match your criteria</h3>
+                    <p>Try adjusting your search filters or browse the full collection.</p>
+                    <button className="gold-btn" onClick={resetFilters}>Reset Filters</button>
+                  </div>
+                ) : (
+                  <div className={viewMode === 'grid' ? 'gallery-grid' : 'gallery-list'}>
+                    {filteredPaintings.map(p => (
+                      <PaintingCard
+                        key={p.id}
+                        painting={p}
+                        viewMode={viewMode}
+                        onSelect={selectPainting}
+                        onQuickView={setQuickViewPainting}
+                        wishlist={wishlist}
+                        onToggleWishlist={toggleWishlist}
+                        compareList={compareList}
+                        onToggleCompare={toggleCompare}
+                        onAddToCart={addToCart}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* PAINTING DETAILS */}
+        {activePage === 'details' && selectedPaintingId && (
+          <PaintingDetails
+            paintingId={selectedPaintingId}
+            onBack={navigateToGallery}
+            onSelect={selectPainting}
+            onAddToCart={addToCart}
+            onToggleWishlist={toggleWishlist}
+            wishlist={wishlist}
+            currentUser={currentUser}
+          />
+        )}
+
+        {/* COMPARE */}
+        {activePage === 'compare' && (
+          <CompareSection
+            compareIds={compareList}
+            onRemoveCompare={removeCompare}
+            onSelect={selectPainting}
+            onAddToCart={addToCart}
+          />
+        )}
+
+        {/* ARTIST */}
+        {activePage === 'artist' && (
+          <ArtistPage currentUser={currentUser} onNavigate={setActivePage} />
+        )}
+
+        {/* COMMISSIONS */}
+        {activePage === 'commissions' && (
+          <ArtistPage currentUser={currentUser} onNavigate={setActivePage} />
+        )}
+
+        {/* REVIEWS (all reviews page) */}
+        {activePage === 'reviews' && (
+          <section className="reviews-page container">
+            <div className="section-header">
+              <span className="museum-label">Visitor Feedback</span>
+              <h1>Collector Reviews</h1>
+              <p className="section-subtitle">Read authentic reviews from verified art collectors worldwide.</p>
+            </div>
+            {paintings.map(p => (
+              <div key={p.id} className="review-painting-block">
+                <h3 className="review-painting-title" onClick={() => selectPainting(p.id)}>{p.name}</h3>
+                <ReviewsSection paintingId={p.id} currentUser={currentUser} />
+              </div>
+            ))}
+          </section>
+        )}
+
+        {/* CONTACT */}
+        {activePage === 'contact' && (
+          <section className="contact-page container">
+            <div className="section-header">
+              <span className="museum-label">Get In Touch</span>
+              <h1>Contact the Gallery</h1>
+              <p className="section-subtitle">Reach out for inquiries, acquisitions, or private viewings.</p>
+            </div>
+            <div className="contact-grid">
+              <div className="glass-card contact-info-card">
+                <h3>Gallery Hours</h3>
+                <p>Monday – Saturday: 10:00 AM – 8:00 PM</p>
+                <p>Sunday: 12:00 PM – 6:00 PM</p>
+                <h3 style={{ marginTop: '24px' }}>Address</h3>
+                <p>Museumplein 6, 1071 DJ<br />Amsterdam, Netherlands</p>
+                <h3 style={{ marginTop: '24px' }}>Email</h3>
+                <p>curator@starlightgallery.art</p>
+              </div>
+              <form className="glass-card contact-form" onSubmit={(e) => { e.preventDefault(); alert('Message sent! Our curator will respond within 24 hours.'); e.target.reset(); }}>
+                <h3>Send a Message</h3>
+                <div className="input-group"><label>Your Name</label><input type="text" required placeholder="Full name" /></div>
+                <div className="input-group"><label>Email Address</label><input type="email" required placeholder="your@email.com" /></div>
+                <div className="input-group"><label>Subject</label><input type="text" required placeholder="Acquisition inquiry" /></div>
+                <div className="input-group"><label>Message</label><textarea rows="5" required placeholder="Write your message..." /></div>
+                <button type="submit" className="gold-btn btn-full">Send Message</button>
+              </form>
+            </div>
+          </section>
+        )}
+
+        {/* USER PROFILE */}
+        {activePage === 'profile' && (
+          <EnhancedUserProfile
+            currentUser={currentUser}
+            orders={orders}
+            userProfile={userProfile}
+            membershipTier={userProfile.membershipTier}
+          />
+        )}
+
+        {/* CHECKOUT */}
+        {activePage === 'checkout' && (
+          <Checkout 
+            cartItems={cart.map(item => {
+              const painting = paintings.find(p => p.id === item.id);
+              return { ...painting, quantity: item.quantity };
+            })}
+            user={currentUser}
+            onCheckoutComplete={handleCheckoutComplete}
+          />
+        )}
+
+        {/* ADMIN DASHBOARD */}
+        {activePage === 'admin' && currentUser?.isAdmin && (
+          <AdminDashboard onRefreshPaintings={refreshPaintings} />
+        )}
+      </div>
+
+      <Footer setActivePage={(page) => { setActivePage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }} />
+    </div>
+  );
+}
+
+export default App;
