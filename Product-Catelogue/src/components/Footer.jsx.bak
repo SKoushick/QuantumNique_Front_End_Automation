@@ -1,0 +1,73 @@
+
+
+const Footer = ({ setActivePage }) => {
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    alert('Thank you for subscribing! You will receive invitations to upcoming virtual art exhibitions.');
+    e.target.reset();
+  };
+
+  return (
+    <footer className="footer-panel">
+      <div className="container footer-grid">
+        {/* Gallery Info */}
+        <div className="footer-info">
+          <div className="footer-logo">
+            <span className="logo-swirl">✦</span> STARLIGHT GALLERY
+          </div>
+          <p className="footer-desc">
+            A luxury digital museum dedicated to Post-Impressionist masterpieces. Step into Vincent van Gogh's swirling dreams and collect authenticated canvas originals.
+          </p>
+          <div className="footer-social-links">
+            <a href="https://instagram.com/vangoghmuseum" target="_blank" rel="noopener noreferrer" className="social-icon-btn">IG</a>
+            <a href="https://x.com/vangoghmuseum" target="_blank" rel="noopener noreferrer" className="social-icon-btn">X</a>
+            <a href="https://www.vangoghmuseum.nl" target="_blank" rel="noopener noreferrer" className="social-icon-btn">WEB</a>
+          </div>
+        </div>
+
+        {/* Navigation Quick Links */}
+        <div className="footer-links-col">
+          <h3>Exhibitions</h3>
+          <ul>
+            <li onClick={() => setActivePage('gallery')}>Celestial Works</li>
+            <li onClick={() => setActivePage('gallery')}>Arlesian Nights</li>
+            <li onClick={() => setActivePage('gallery')}>Country Fields</li>
+            <li onClick={() => setActivePage('gallery')}>Floral Symphony</li>
+          </ul>
+        </div>
+
+        {/* Resources */}
+        <div className="footer-links-col">
+          <h3>Curations</h3>
+          <ul>
+            <li onClick={() => setActivePage('artist')}>About Vincent</li>
+            <li onClick={() => setActivePage('commissions')}>Commission Work</li>
+            <li onClick={() => setActivePage('reviews')}>Visitor Reviews</li>
+            <li onClick={() => setActivePage('contact')}>Contact Curator</li>
+          </ul>
+        </div>
+
+        {/* Newsletter Subscription */}
+        <div className="footer-newsletter">
+          <h3>Exhibition Invitations</h3>
+          <p>Subscribe to receive private viewing links and early alerts for new original painting listings.</p>
+          <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
+            <input type="email" placeholder="Enter your email address" required />
+            <button type="submit" className="gold-btn">Join List</button>
+          </form>
+        </div>
+      </div>
+
+      <div className="footer-bottom container">
+        <p>&copy; {new Date().getFullYear()} Starlight Gallery. All artworks authenticated by their respective archives.</p>
+        <div className="footer-meta-links">
+          <span>WCAG 2.1 Compliant</span>
+          <span>Privacy Policy</span>
+          <span>Terms of Sale</span>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

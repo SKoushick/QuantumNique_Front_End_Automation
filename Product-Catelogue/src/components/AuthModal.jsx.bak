@@ -1,0 +1,247 @@
+
+import { getUsers, saveUser } from '../utils/storage';
+
+const AuthModal = ({ onClose, onLoginSuccess }) => {
+  const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'forgot'
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    phone: '',
+    address: ''
+  });
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
+  };
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    const users = getUsers() || [];
+    const matchedUser = users.find(
+      u => u.email.toLowerCase() === formData.email.toLowerCase() && u.password === formData.password
+    );
+
+    if (matchedUser) {
+      onLoginSuccess(matchedUser);
+      onClose();
+    } else {
+      setError('Invalid email or password. Hint: Try buyer@gallery.com / password123 or curator@gallery.com / adminpassword');
+    }
+  };
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match.');
+      return;
+    }
+
+    const users = getUsers() || [];
+    if (users.find(u => u.email.toLowerCase() === formData.email.toLowerCase())) {
+      setError('An account with this email already exists.');
+      return;
+    }
+
+    const newUser = {
+      id: `user_${Date.now()}`,
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      phone: formData.phone || '',
+      address: formData.address || '',
+      profilePic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      isAdmin: false
+    };
+
+    saveUser(newUser);
+    onLoginSuccess(newUser);
+    onClose();
+  };
+
+  const handleForgotSubmit = (e) => {
+    e.preventDefault();
+    const users = getUsers() || [];
+    const matchedUser = users.find(u => u.email.toLowerCase() === formData.email.toLowerCase());
+
+    if (matchedUser) {
+      setMessage(`Recovery instructions sent to ${formData.email}. Hint: your password is "${matchedUser.password}"`);
+    } else {
+      setError('No account found with this email address.');
+    }
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal-content-glass glass-panel auth-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="close-modal-btn" onClick={onClose}>&times;</button>
+        
+        {authMode === 'login' && (
+          <form onSubmit={handleLoginSubmit} className="auth-form">
+            <h2>Welcome Back</h2>
+            <p className="auth-subtitle">Sign in to your collector profile</p>
+            
+            {error && <div className="auth-error-msg">{error}</div>}
+            
+            <div className="input-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="collector@example.com"
+              />
+            </div>
+            
+            <div className="input-group">
+              <div className="label-row">
+                <label>Password</label>
+                <span className="forgot-pwd-trigger" onClick={() => setAuthMode('forgot')}>Forgot Password?</span>
+              </div>
+              <input
+                type="password"
+                name="password"
+                required
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button type="submit" className="gold-btn btn-full">Sign In</button>
+            
+            <p className="auth-footer-text">
+              New collector? <span onClick={() => setAuthMode('signup')}>Create Account</span>
+            </p>
+          </form>
+        )}
+
+        {authMode === 'signup' && (
+          <form onSubmit={handleSignupSubmit} className="auth-form">
+            <h2>Create Profile</h2>
+            <p className="auth-subtitle">Register to collect original art masterpieces</p>
+            
+            {error && <div className="auth-error-msg">{error}</div>}
+            
+            <div className="input-group">
+              <label>Full Name *</label>
+              <input
+                type="text"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Arthur Pendragon"
+              />
+            </div>
+
+            <div className="input-group">
+              <label>Email Address *</label>
+              <input
+                type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="buyer@gallery.com"
+              />
+            </div>
+
+            <div className="auth-grid-inputs">
+              <div className="input-group">
+                <label>Password *</label>
+                <input
+                  type="password"
+                  name="password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                />
+              </div>
+              <div className="input-group">
+                <label>Confirm Password *</label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div className="input-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+33 6 1234 5678"
+              />
+            </div>
+
+            <div className="input-group">
+              <label>Shipping Address</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="12 Rue de la Paix, Paris, France"
+              />
+            </div>
+
+            <button type="submit" className="gold-btn btn-full">Register</button>
+            
+            <p className="auth-footer-text">
+              Already have a profile? <span onClick={() => setAuthMode('login')}>Sign In</span>
+            </p>
+          </form>
+        )}
+
+        {authMode === 'forgot' && (
+          <form onSubmit={handleForgotSubmit} className="auth-form">
+            <h2>Recover Password</h2>
+            <p className="auth-subtitle">Enter your email to recover your credentials</p>
+            
+            {error && <div className="auth-error-msg">{error}</div>}
+            {message && <div className="auth-success-msg">{message}</div>}
+            
+            <div className="input-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="collector@example.com"
+              />
+            </div>
+
+            <button type="submit" className="gold-btn btn-full">Reset Password</button>
+            
+            <p className="auth-footer-text">
+              Remembered credentials? <span onClick={() => setAuthMode('login')}>Sign In</span>
+            </p>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AuthModal;

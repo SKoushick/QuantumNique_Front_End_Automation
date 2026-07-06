@@ -1,0 +1,154 @@
+
+
+const FilterSidebar = ({
+  priceRange,
+  setPriceRange,
+  selectedMediums,
+  setSelectedMediums,
+  selectedStyles,
+  setSelectedStyles,
+  selectedOrientations,
+  setSelectedOrientations,
+  selectedAvailability,
+  setSelectedAvailability,
+  minRating,
+  setMinRating,
+  onReset
+}) => {
+  const mediums = ['Oil', 'Acrylic', 'Watercolor', 'Charcoal', 'Mixed Media'];
+  const styles = ['Impressionism', 'Post-Impressionism', 'Floral Study', 'Landscape', 'Still Life'];
+  const orientations = ['Landscape', 'Portrait', 'Square'];
+  const availabilities = ['In Stock', 'Low Stock', 'Sold'];
+
+  const toggleFilter = (list, setList, value) => {
+    if (list.includes(value)) {
+      setList(list.filter(item => item !== value));
+    } else {
+      setList([...list, value]);
+    }
+  };
+
+  const formatPrice = (p) => {
+    if (p >= 1000000) return `$${(p / 1000000).toFixed(1)}M`;
+    return `$${p.toLocaleString()}`;
+  };
+
+  return (
+    <aside className="filter-sidebar glass-panel">
+      <div className="filter-header">
+        <h3>Exhibition Filters</h3>
+        <button className="reset-btn-link" onClick={onReset}>Clear All</button>
+      </div>
+
+      {/* Price Range Slider */}
+      <div className="filter-section">
+        <h4>Price Cap</h4>
+        <div className="price-slider-container">
+          <input
+            type="range"
+            min="0"
+            max="150000000"
+            step="1000000"
+            value={priceRange}
+            onChange={(e) => setPriceRange(Number(e.target.value))}
+            className="slider-accent"
+          />
+          <div className="price-labels">
+            <span>$0</span>
+            <span className="current-price-label">{formatPrice(priceRange)}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Mediums */}
+      <div className="filter-section">
+        <h4>Artistic Medium</h4>
+        <div className="checkbox-group">
+          {mediums.map(m => (
+            <label key={m} className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedMediums.includes(m)}
+                onChange={() => toggleFilter(selectedMediums, setSelectedMediums, m)}
+              />
+              <span className="checkmark"></span>
+              {m}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Styles */}
+      <div className="filter-section">
+        <h4>Artwork Style</h4>
+        <div className="checkbox-group">
+          {styles.map(s => (
+            <label key={s} className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedStyles.includes(s)}
+                onChange={() => toggleFilter(selectedStyles, setSelectedStyles, s)}
+              />
+              <span className="checkmark"></span>
+              {s}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Orientation */}
+      <div className="filter-section">
+        <h4>Frame Orientation</h4>
+        <div className="checkbox-group">
+          {orientations.map(o => (
+            <label key={o} className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedOrientations.includes(o)}
+                onChange={() => toggleFilter(selectedOrientations, setSelectedOrientations, o)}
+              />
+              <span className="checkmark"></span>
+              {o}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Availability */}
+      <div className="filter-section">
+        <h4>Availability</h4>
+        <div className="checkbox-group">
+          {availabilities.map(a => (
+            <label key={a} className="custom-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedAvailability.includes(a)}
+                onChange={() => toggleFilter(selectedAvailability, setSelectedAvailability, a)}
+              />
+              <span className="checkmark"></span>
+              {a}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Rating */}
+      <div className="filter-section">
+        <h4>Minimum Rating</h4>
+        <div className="rating-select-group">
+          {[4.5, 4.7, 4.8, 4.9].map(r => (
+            <button
+              key={r}
+              className={`rating-pill-btn ${minRating === r ? 'active' : ''}`}
+              onClick={() => setMinRating(minRating === r ? null : r)}
+            >
+              ★ {r}+
+            </button>
+          ))}
+        </div>
+      </div>
+    </aside>
+  );
+};
+
+export default FilterSidebar;

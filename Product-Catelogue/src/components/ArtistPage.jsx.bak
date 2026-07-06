@@ -1,0 +1,199 @@
+
+import { getArtist, saveCommission } from '../utils/storage';
+
+const ArtistPage = ({ currentUser, onNavigate }) => {
+  const artist = getArtist();
+  const [showCommissionForm, setShowCommissionForm] = useState(false);
+  const [commForm, setCommForm] = useState({
+    name: currentUser?.name || '',
+    email: currentUser?.email || '',
+    phone: currentUser?.phone || '',
+    size: '',
+    style: '',
+    medium: 'Oil',
+    budget: '',
+    notes: ''
+  });
+
+  const handleCommChange = (e) => {
+    setCommForm({ ...commForm, [e.target.name]: e.target.value });
+  };
+
+  const handleCommSubmit = (e) => {
+    e.preventDefault();
+    const newComm = {
+      id: `comm_${Date.now()}`,
+      userId: currentUser?.id || 'guest',
+      userName: commForm.name,
+      email: commForm.email,
+      phone: commForm.phone,
+      size: commForm.size,
+      style: commForm.style,
+      medium: commForm.medium,
+      budget: Number(commForm.budget) || 0,
+      notes: commForm.notes,
+      status: 'Pending Review',
+      date: new Date().toISOString().split('T')[0],
+      referenceImages: []
+    };
+    saveCommission(newComm);
+    alert('Commission request submitted successfully! The artist will review your request shortly.');
+    setShowCommissionForm(false);
+    setCommForm({ name: '', email: '', phone: '', size: '', style: '', medium: 'Oil', budget: '', notes: '' });
+  };
+
+  if (!artist) return null;
+
+  return (
+    <main className="artist-page container">
+      {/* Hero Banner */}
+      <section className="artist-hero-section">
+        <div className="artist-hero-bg swirling-bg-overlay"></div>
+        <div className="artist-hero-content">
+          <div className="artist-avatar-frame">
+            <img src={artist.avatar} alt={artist.name} className="artist-avatar-img" />
+          </div>
+          <div className="artist-hero-text">
+            <span className="museum-label">Master Artist</span>
+            <h1>{artist.name}</h1>
+            <p className="artist-experience">{artist.yearsOfExperience}</p>
+            <div className="artist-social-row">
+              {artist.socials.instagram && (
+                <a href={artist.socials.instagram} target="_blank" rel="noopener noreferrer" className="social-pill">Instagram</a>
+              )}
+              {artist.socials.twitter && (
+                <a href={artist.socials.twitter} target="_blank" rel="noopener noreferrer" className="social-pill">X / Twitter</a>
+              )}
+              {artist.socials.website && (
+                <a href={artist.socials.website} target="_blank" rel="noopener noreferrer" className="social-pill">Museum Website</a>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Biography */}
+      <section className="artist-bio-section">
+        <div className="bio-grid">
+          <div className="glass-card bio-text-card">
+            <span className="museum-label">Biography</span>
+            <h2>The Life & Vision</h2>
+            <p>{artist.biography}</p>
+          </div>
+          <div className="glass-card bio-statement-card">
+            <span className="museum-label">Artist Statement</span>
+            <h2>Creative Philosophy</h2>
+            <blockquote className="artist-statement-quote">
+              "{artist.statement}"
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      {/* Awards */}
+      <section className="artist-awards-section">
+        <span className="museum-label">Honors & Recognition</span>
+        <h2>Awards & Accolades</h2>
+        <div className="awards-grid">
+          {artist.awards.map((award, i) => (
+            <div key={i} className="glass-card award-card">
+              <div className="award-icon">🏅</div>
+              <p>{award}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Exhibition Timeline */}
+      <section className="artist-exhibitions-section">
+        <span className="museum-label">Exhibition History</span>
+        <h2>Public Exhibitions</h2>
+        <div className="timeline-container">
+          {artist.exhibitions.map((ex, i) => (
+            <div key={i} className="timeline-item glass-card">
+              <div className="timeline-dot"></div>
+              <div className="timeline-year">{ex.year}</div>
+              <h4>{ex.title}</h4>
+              <p>{ex.location}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Studio Photos */}
+      {artist.studioPhotos && artist.studioPhotos.length > 0 && (
+        <section className="studio-section">
+          <span className="museum-label">From the Studio</span>
+          <h2>Creative Workspace</h2>
+          <div className="studio-gallery">
+            {artist.studioPhotos.map((photo, i) => (
+              <div key={i} className="frame-container studio-frame">
+                <img src={photo} alt={`Studio ${i + 1}`} className="zoom-img" />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Commission Section */}
+      <section className="commission-section glass-card">
+        <div className="commission-intro">
+          <span className="museum-label">Bespoke Artworks</span>
+          <h2>Commission a Custom Painting</h2>
+          <p>Request a one-of-a-kind original artwork tailored to your vision, space, and aesthetic preferences.</p>
+          <button className="gold-btn btn-lg" onClick={() => setShowCommissionForm(!showCommissionForm)}>
+            {showCommissionForm ? 'Cancel Request' : 'Request Commission'}
+          </button>
+        </div>
+
+        {showCommissionForm && (
+          <form onSubmit={handleCommSubmit} className="commission-form">
+            <div className="form-grid-2col">
+              <div className="input-group">
+                <label>Full Name *</label>
+                <input type="text" name="name" required value={commForm.name} onChange={handleCommChange} placeholder="Your name" />
+              </div>
+              <div className="input-group">
+                <label>Email Address *</label>
+                <input type="email" name="email" required value={commForm.email} onChange={handleCommChange} placeholder="your@email.com" />
+              </div>
+              <div className="input-group">
+                <label>Phone Number</label>
+                <input type="tel" name="phone" value={commForm.phone} onChange={handleCommChange} placeholder="+1 234 567 890" />
+              </div>
+              <div className="input-group">
+                <label>Preferred Size</label>
+                <input type="text" name="size" value={commForm.size} onChange={handleCommChange} placeholder="e.g. 60 cm × 80 cm" />
+              </div>
+              <div className="input-group">
+                <label>Desired Style</label>
+                <input type="text" name="style" value={commForm.style} onChange={handleCommChange} placeholder="e.g. Impressionist Starry Night" />
+              </div>
+              <div className="input-group">
+                <label>Preferred Medium</label>
+                <select name="medium" value={commForm.medium} onChange={handleCommChange}>
+                  <option value="Oil">Oil on Canvas</option>
+                  <option value="Acrylic">Acrylic</option>
+                  <option value="Watercolor">Watercolor</option>
+                  <option value="Charcoal">Charcoal</option>
+                  <option value="Mixed Media">Mixed Media</option>
+                </select>
+              </div>
+              <div className="input-group">
+                <label>Budget (USD)</label>
+                <input type="number" name="budget" value={commForm.budget} onChange={handleCommChange} placeholder="e.g. 15000" />
+              </div>
+            </div>
+            <div className="input-group full-width">
+              <label>Additional Notes & Vision Description</label>
+              <textarea name="notes" rows="4" value={commForm.notes} onChange={handleCommChange} placeholder="Describe your vision, color preferences, subjects, mood, and any reference details..." />
+            </div>
+            <button type="submit" className="gold-btn btn-lg">Submit Commission Request</button>
+          </form>
+        )}
+      </section>
+    </main>
+  );
+};
+
+export default ArtistPage;
