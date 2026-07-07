@@ -1,14 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import './App.css';
 import {
   initStorage, getPaintings, getTheme, setTheme as saveTheme,
   getCurrentUser, setCurrentUser as saveCurrentUser,
   getWishlist, setWishlist as saveWishlist,
   getCart, setCart as saveCart,
-  getCompare, setCompare as saveCompare
+  getCompare, setCompare as saveCompare,
+  saveOrder, getOrdersByUser, getUserProfile, saveUserProfile
 } from './utils/storage';
 import { getMembershipTier } from './utils/membership';
-import { advancedSearch, getPersonalizedRecommendations } from './utils/recommendations';
+import { getPersonalizedRecommendations } from './utils/recommendations';
 
 import StarryBg from './components/StarryBg';
 import Navbar from './components/Navbar';
@@ -68,6 +70,30 @@ function App() {
     initStorage();
     setPaintings(getPaintings() || []);
   }, []);
+
+  // Synchronize profile and orders with localStorage on currentUser state changes
+  useEffect(() => {
+    if (currentUser) {
+      const profile = getUserProfile(currentUser.id) || {
+        viewedPaintings: currentUser.viewedPaintings || [],
+        purchasedPaintings: currentUser.purchasedPaintings || [],
+        wishedPaintings: wishlist,
+        totalSpending: currentUser.totalSpending || 0,
+        membershipTier: getMembershipTier(currentUser.totalSpending || 0)
+      };
+      setUserProfile(profile);
+      setOrders(getOrdersByUser(currentUser.id));
+    } else {
+      setUserProfile({
+        viewedPaintings: [],
+        purchasedPaintings: [],
+        wishedPaintings: [],
+        totalSpending: 0,
+        membershipTier: null
+      });
+      setOrders([]);
+    }
+  }, [currentUser]);
 
   // Calculate personalized recommendations whenever user profile or paintings change
   useEffect(() => {
@@ -155,23 +181,48 @@ function App() {
     saveCart(updated);
   };
 
+  const updateCartQuantity = (id, quantity) => {
+    if (quantity < 1) {
+      removeFromCart(id);
+      return;
+    }
+    const updated = cart.map(item => item.id === id ? { ...item, quantity } : item);
+    setCartState(updated);
+    saveCart(updated);
+  };
+
   // Checkout completion handler
   const handleCheckoutComplete = (order) => {
     // Add order to history
-    setOrders([...orders, order]);
+    saveOrder(order);
     
-    // Update user profile with purchase info
-    const updatedProfile = {
-      ...userProfile,
-      purchasedPaintings: [...(userProfile.purchasedPaintings || []), ...order.items.map(i => i.paintingId)],
-      totalSpending: (userProfile.totalSpending || 0) + order.total
-    };
-    
-    // Update membership tier
-    const newTier = getMembershipTier(updatedProfile.totalSpending);
-    updatedProfile.membershipTier = newTier;
-    
-    setUserProfile(updatedProfile);
+    if (currentUser) {
+      setOrders(getOrdersByUser(currentUser.id));
+      
+      // Update user profile with purchase info
+      const updatedProfile = {
+        ...userProfile,
+        purchasedPaintings: [...(userProfile.purchasedPaintings || []), ...order.items.map(i => i.paintingId)],
+        totalSpending: (userProfile.totalSpending || 0) + order.total
+      };
+      
+      // Update membership tier
+      const newTier = getMembershipTier(updatedProfile.totalSpending);
+      updatedProfile.membershipTier = newTier;
+      
+      saveUserProfile(currentUser.id, updatedProfile);
+      setUserProfile(updatedProfile);
+      
+      // Update current user total spending
+      const updatedUser = {
+        ...currentUser,
+        totalSpending: updatedProfile.totalSpending
+      };
+      setCurrentUserState(updatedUser);
+      saveCurrentUser(updatedUser);
+    } else {
+      setOrders([...orders, order]);
+    }
     
     // Clear cart
     setCartState([]);
@@ -302,39 +353,130 @@ function App() {
       />
 
       {/* Cart Drawer */}
-      {showCartDrawer && (
-        <div className="cart-drawer glass-panel">
-          <div className="cart-drawer-header">
-            <h3>Shopping Cart</h3>
-            <button className="close-modal-btn" onClick={() => setShowCartDrawer(false)}>&times;</button>
-          </div>
-          {cart.length === 0 ? (
-            <p className="cart-empty-msg">Your cart is empty. Browse the gallery to add paintings.</p>
-          ) : (
-            <>
-              <div className="cart-items-list">
-                {cart.map(item => (
-                  <div key={item.id} className="cart-item">
-                    <img src={item.image} alt={item.name} className="cart-item-thumb" />
-                    <div className="cart-item-meta">
-                      <h4>{item.name}</h4>
-                      <span className="text-gold">{formatPrice(item.price)} × {item.quantity}</span>
-                    </div>
-                    <button className="remove-cart-btn" onClick={() => removeFromCart(item.id)}>&times;</button>
+      <AnimatePresence>
+        {showCartDrawer && (
+          <>
+            <motion.div 
+              className="cart-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowCartDrawer(false)}
+            />
+            <motion.div 
+              className="cart-drawer glass-panel"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            >
+              <div className="cart-drawer-header">
+                <h3>Shopping Cart</h3>
+                <motion.button 
+                  className="close-modal-btn" 
+                  onClick={() => setShowCartDrawer(false)}
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  &times;
+                </motion.button>
+              </div>
+              {cart.length === 0 ? (
+                <motion.div 
+                  className="cart-empty-msg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <p>Your cart is empty. Browse the gallery to add paintings.</p>
+                </motion.div>
+              ) : (
+                <>
+                  <div className="cart-items-list">
+                    {cart.map((item, i) => (
+                      <motion.div 
+                        key={item.id} 
+                        className="cart-item"
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: i * 0.05 }}
+                      >
+                        <img src={item.image || item.images?.[0]} alt={item.name} className="cart-item-thumb" />
+                        <div className="cart-item-meta">
+                          <h4>{item.name}</h4>
+                          <span className="text-gold">{formatPrice(item.price)}</span>
+                          <div className="cart-quantity-controls">
+                            <motion.button 
+                              onClick={() => updateCartQuantity(item.id, item.quantity - 1)}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              disabled={item.quantity <= 1}
+                            >
+                              −
+                            </motion.button>
+                            <span>{item.quantity}</span>
+                            <motion.button 
+                              onClick={() => updateCartQuantity(item.id, item.quantity + 1)}
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                            >
+                              +
+                            </motion.button>
+                          </div>
+                        </div>
+                        <motion.button 
+                          className="remove-cart-btn" 
+                          onClick={() => removeFromCart(item.id)}
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          &times;
+                        </motion.button>
+                      </motion.div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              <div className="cart-total-row">
-                <span>Total:</span>
-                <span className="text-gold font-bold">{formatPrice(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}</span>
-              </div>
-              <button className="gold-btn btn-full" onClick={() => alert('Checkout functionality coming soon!')}>
-                Proceed to Checkout
-              </button>
-            </>
-          )}
-        </div>
-      )}
+                  <motion.div 
+                    className="cart-summary-section"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <div className="cart-summary-row">
+                      <span>Subtotal:</span>
+                      <span>{formatPrice(cart.reduce((sum, item) => sum + item.price * item.quantity, 0))}</span>
+                    </div>
+                    <div className="cart-summary-row">
+                      <span>Shipping:</span>
+                      <span>{cart.reduce((sum, item) => sum + item.price * item.quantity, 0) > 50000 ? 'Free' : formatPrice(2000)}</span>
+                    </div>
+                    <div className="cart-summary-row">
+                      <span>Tax (18% GST):</span>
+                      <span>{formatPrice(Math.round(cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * 0.18))}</span>
+                    </div>
+                    <div className="cart-summary-row cart-total-row">
+                      <span>Total:</span>
+                      <span className="text-gold font-bold">
+                        {formatPrice(
+                          cart.reduce((sum, item) => sum + item.price * item.quantity, 0) +
+                          Math.round(cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * 0.18) +
+                          (cart.reduce((sum, item) => sum + item.price * item.quantity, 0) > 50000 ? 0 : 2000)
+                        )}
+                      </span>
+                    </div>
+                  </motion.div>
+                  <motion.button 
+                    className="gold-btn btn-full" 
+                    onClick={() => { setActivePage('checkout'); setShowCartDrawer(false); }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Proceed to Checkout
+                  </motion.button>
+                </>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Quick View Modal */}
       {quickViewPainting && (
@@ -401,7 +543,7 @@ function App() {
                   return (
                     <div key={col} className="collection-card glass-card" onClick={() => { setSearchQuery(col); setActivePage('gallery'); }}>
                       <div className="frame-container collection-frame">
-                        <img src={colPainting?.images[0]} alt={col} className="zoom-img" />
+                        <img src={colPainting?.images?.[0]} alt={col} className="zoom-img" />
                       </div>
                       <h3>{col}</h3>
                       <p>{paintings.filter(p => p.collection === col).length} Artworks</p>
@@ -573,8 +715,8 @@ function App() {
           <Checkout 
             cartItems={cart.map(item => {
               const painting = paintings.find(p => p.id === item.id);
-              return { ...painting, quantity: item.quantity };
-            })}
+              return painting ? { ...painting, quantity: item.quantity } : null;
+            }).filter(Boolean)}
             user={currentUser}
             onCheckoutComplete={handleCheckoutComplete}
           />

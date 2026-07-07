@@ -126,7 +126,7 @@ const ArtistPage = ({ currentUser, onNavigate }) => {
           <span className="museum-label">From the Studio</span>
           <h2>Creative Workspace</h2>
           <div className="studio-gallery">
-            {artist.studioPhotos.map((photo, i) => (
+            {artist.studioPhotos?.map((photo, i) => (
               <div key={i} className="frame-container studio-frame">
                 <img src={photo} alt={`Studio ${i + 1}`} className="zoom-img" />
               </div>

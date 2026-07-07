@@ -36,7 +36,7 @@ const CompareSection = ({ compareIds, onRemoveCompare, onSelect, onAddToCart }) 
                   <div className="compare-header-card">
                     <button className="remove-compare-btn" onClick={() => onRemoveCompare(p.id)} title="Remove">&times;</button>
                     <div className="frame-container compare-frame">
-                      <img src={p.images[0]} alt={p.name} />
+                      <img src={p.images?.[0]} alt={p.name} />
                     </div>
                     <h4>{p.name}</h4>
                     <span className="sku-sub">{p.sku}</span>

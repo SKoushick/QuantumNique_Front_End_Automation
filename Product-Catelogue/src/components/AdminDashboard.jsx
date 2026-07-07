@@ -256,7 +256,7 @@ const AdminDashboard = ({ onRefreshPaintings }) => {
               <tbody>
                 {paintings.map(p => (
                   <tr key={p.id}>
-                    <td><img src={p.images[0]} alt={p.name} className="admin-thumb" /></td>
+                    <td><img src={p.images?.[0]} alt={p.name} className="admin-thumb" /></td>
                     <td className="admin-name-cell">{p.name}</td>
                     <td className="sku-label">{p.sku}</td>
                     <td>{p.medium}</td>

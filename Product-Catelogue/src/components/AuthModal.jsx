@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { getUsers, saveUser } from '../utils/storage';
+import userBuyer from '../assets/images/user-buyer.jpg';
 
 const AuthModal = ({ onClose, onLoginSuccess }) => {
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup' | 'forgot'
@@ -58,7 +59,7 @@ const AuthModal = ({ onClose, onLoginSuccess }) => {
       password: formData.password,
       phone: formData.phone || '',
       address: formData.address || '',
-      profilePic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+      profilePic: userBuyer,
       isAdmin: false
     };
 

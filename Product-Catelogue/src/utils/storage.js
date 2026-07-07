@@ -22,6 +22,14 @@ const KEYS = {
 };
 
 export const initStorage = () => {
+  const DB_VERSION = 'v1.4';
+  if (localStorage.getItem('starry_gallery_db_version') !== DB_VERSION) {
+    localStorage.removeItem(KEYS.PAINTINGS);
+    localStorage.removeItem(KEYS.ARTIST);
+    localStorage.removeItem(KEYS.USERS);
+    localStorage.setItem('starry_gallery_db_version', DB_VERSION);
+  }
+
   if (!localStorage.getItem(KEYS.ARTIST)) {
     localStorage.setItem(KEYS.ARTIST, JSON.stringify(initialArtist));
   }

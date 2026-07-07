@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { validators, validateForm } from '../utils/validation';
 import { createOrder } from '../utils/orders';
 import { getMembershipTier, applyTierBenefits } from '../utils/membership';
 
-export default function CheckoutComponent({ cartItems, user, onCheckoutComplete }) {
+function CheckoutComponent({ cartItems, user, onCheckoutComplete }) {
   const [step, setStep] = useState(1); // 1: Shipping, 2: Payment, 3: Review, 4: Confirmation
   const [formErrors, setFormErrors] = useState({});
   const [orderData, setOrderData] = useState(null);
@@ -143,7 +144,12 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
   };
 
   return (
-    <div className="checkout-container">
+    <motion.div 
+      className="checkout-container"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <style>{`
         .checkout-container {
           max-width: 1000px;
@@ -443,19 +449,30 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
       {/* Header with Step Indicators */}
       <div className="checkout-header">
         {[1, 2, 3, 4].map((stepNum) => (
-          <div
+          <motion.div
             key={stepNum}
             className={`step-indicator ${step === stepNum ? 'active' : step > stepNum ? 'completed' : ''}`}
             onClick={() => step > stepNum && setStep(stepNum)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: stepNum * 0.1 }}
           >
-            <span className="step-number">{step > stepNum ? '✓' : stepNum}</span>
+            <motion.span 
+              className="step-number"
+              animate={step === stepNum ? { scale: [1, 1.2, 1] } : {}}
+              transition={{ duration: 0.3 }}
+            >
+              {step > stepNum ? '✓' : stepNum}
+            </motion.span>
             <span>
               {stepNum === 1 && 'Shipping'}
               {stepNum === 2 && 'Payment'}
               {stepNum === 3 && 'Review'}
               {stepNum === 4 && 'Confirmed'}
             </span>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -463,9 +480,17 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
       <div className="checkout-content">
         {/* Form Section */}
         <div>
-          {/* Step 1: Shipping Address */}
-          {step === 1 && (
-            <div className="checkout-form">
+          <AnimatePresence mode="wait">
+            {/* Step 1: Shipping Address */}
+            {step === 1 && (
+              <motion.div 
+                className="checkout-form"
+                key="step1"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
               <h2>Shipping Address</h2>
               <form onSubmit={handleShippingSubmit}>
                 <div className="form-group">
@@ -564,15 +589,29 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
                 </div>
 
                 <div className="checkout-buttons">
-                  <button className="btn-next" type="submit">Continue to Payment</button>
+                  <motion.button 
+                    className="btn-next" 
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Continue to Payment
+                  </motion.button>
                 </div>
               </form>
-            </div>
-          )}
+              </motion.div>
+            )}
 
-          {/* Step 2: Payment Method */}
-          {step === 2 && (
-            <div className="checkout-form">
+            {/* Step 2: Payment Method */}
+            {step === 2 && (
+              <motion.div 
+                className="checkout-form"
+                key="step2"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
               <h2>Payment Method</h2>
               <div className="payment-methods">
                 <div className={`payment-method ${payment.method === 'card' ? 'active' : ''}`} onClick={() => setPayment({ ...payment, method: 'card' })}>
@@ -680,16 +719,38 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
                 )}
 
                 <div className="checkout-buttons">
-                  <button className="btn-back" type="button" onClick={() => setStep(1)}>Back</button>
-                  <button className="btn-next" type="submit">Review Order</button>
+                  <motion.button 
+                    className="btn-back" 
+                    type="button" 
+                    onClick={() => setStep(1)}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Back
+                  </motion.button>
+                  <motion.button 
+                    className="btn-next" 
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    Review Order
+                  </motion.button>
                 </div>
               </form>
-            </div>
-          )}
+              </motion.div>
+            )}
 
-          {/* Step 3: Review Order */}
-          {step === 3 && (
-            <div className="checkout-form">
+            {/* Step 3: Review Order */}
+            {step === 3 && (
+              <motion.div 
+                className="checkout-form"
+                key="step3"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+              >
               <h2>Review Your Order</h2>
               
               <div style={{ marginBottom: '20px' }}>
@@ -718,17 +779,38 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
               </div>
 
               <div className="checkout-buttons">
-                <button className="btn-back" type="button" onClick={() => setStep(2)}>Back</button>
-                <button className="btn-next" onClick={handlePlaceOrder} disabled={loading}>
+                <motion.button 
+                  className="btn-back" 
+                  type="button" 
+                  onClick={() => setStep(2)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  Back
+                </motion.button>
+                <motion.button 
+                  className="btn-next" 
+                  onClick={handlePlaceOrder} 
+                  disabled={loading}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
                   {loading ? 'Processing...' : 'Place Order'}
-                </button>
+                </motion.button>
               </div>
-            </div>
-          )}
+              </motion.div>
+            )}
 
-          {/* Step 4: Order Confirmation */}
-          {step === 4 && orderData && (
-            <div className="checkout-form confirmation-section">
+            {/* Step 4: Order Confirmation */}
+            {step === 4 && orderData && (
+              <motion.div 
+                className="checkout-form confirmation-section"
+                key="step4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.4 }}
+              >
               <div className="confirmation-icon">✅</div>
               <h2>Order Confirmed!</h2>
               <p style={{ fontSize: '16px', color: 'var(--text-muted)' }}>Thank you for your purchase</p>
@@ -741,12 +823,18 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
               </p>
 
               {userTier && (
-                <div className="member-tier-badge">
+                <motion.div 
+                  className="member-tier-badge"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
                   {userTier.icon} {userTier.name} Member - {(memberDiscount).toLocaleString()}M Saved
-                </div>
+                </motion.div>
               )}
-            </div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Order Summary Sidebar */}
@@ -756,7 +844,7 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
           <div className="cart-items">
             {cartItems.map(item => (
               <div key={item.id} className="cart-item">
-                {item.images?.[0] && <img src={item.images[0]} alt={item.name} className="cart-item-image" />}
+                {item.images?.[0] && <img src={item.images?.[0]} alt={item.name} className="cart-item-image" />}
                 <div className="cart-item-details">
                   <div className="cart-item-name">{item.name}</div>
                   <div style={{ color: 'var(--text-muted)' }}>x{item.quantity || 1}</div>
@@ -794,6 +882,8 @@ export default function CheckoutComponent({ cartItems, user, onCheckoutComplete 
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
+
+export default CheckoutComponent;

@@ -30,9 +30,9 @@ export const createOrder = (cartItems, userInfo, shippingAddress, paymentInfo) =
 
   const order = {
     id: orderId,
-    userId: userInfo.id,
-    userName: userInfo.name,
-    userEmail: userInfo.email,
+    userId: userInfo?.id || 'guest',
+    userName: userInfo?.name || shippingAddress.fullName,
+    userEmail: userInfo?.email || shippingAddress.email,
     items: cartItems.map(item => ({
       paintingId: item.id,
       name: item.name,

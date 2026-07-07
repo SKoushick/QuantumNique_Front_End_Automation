@@ -378,7 +378,7 @@ export default function EnhancedUserProfile({ currentUser, orders, userProfile, 
           <>
             <div className="stats-grid">
               <div className="stat-box">
-                <div className="stat-number">${(currentUser?.totalSpending || 0).toLocaleString()}M</div>
+                <div className="stat-number">₹{(currentUser?.totalSpending || 0).toLocaleString()}M</div>
                 <div className="stat-label">Total Spent</div>
               </div>
               <div className="stat-box">
@@ -418,7 +418,7 @@ export default function EnhancedUserProfile({ currentUser, orders, userProfile, 
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </div>
                   </div>
-                  <div className="order-total">${order.total.toLocaleString()}M</div>
+                  <div className="order-total">₹{order.total.toLocaleString()}M</div>
                 </div>
               ))
             ) : (

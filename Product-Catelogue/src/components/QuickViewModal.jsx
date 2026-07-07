@@ -4,8 +4,8 @@ const QuickViewModal = ({ painting, onClose, onSelect, onAddToCart }) => {
   if (!painting) return null;
 
   const formatPrice = (p) => {
-    if (p >= 1000000) return `$${(p / 1000000).toFixed(1)}M`;
-    return `$${p.toLocaleString()}`;
+    if (p >= 1000000) return `₹${(p / 1000000).toFixed(1)}M`;
+    return `₹${p.toLocaleString()}`;
   };
 
   return (
@@ -17,7 +17,7 @@ const QuickViewModal = ({ painting, onClose, onSelect, onAddToCart }) => {
           {/* Framed Image */}
           <div className="quickview-image-panel">
             <div className="frame-container">
-              <img src={painting.images[0]} alt={painting.name} className="quickview-img" />
+              <img src={painting.images?.[0]} alt={painting.name} className="quickview-img" />
             </div>
           </div>
 

@@ -1,16 +1,68 @@
-# React + Vite
+# Starlight Gallery - Product Catalogue
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A luxury digital museum React application for Post-Impressionist masterpieces.
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Node.js (v18 or higher)
+- npm or yarn
 
-## React Compiler
+## Installation
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+1. Install dependencies:
+```bash
+npm install
+```
 
-## Expanding the ESLint configuration
+## Running the Application
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Development Mode (Required for Images to Load)
+
+**IMPORTANT**: To see images properly, you MUST run the Vite dev server. VSCode's simple preview will not work because this project uses Vite's ES module imports for images.
+
+1. Start the development server:
+```bash
+npm run dev
+```
+
+2. Open your browser and navigate to:
+```
+http://localhost:5173
+```
+
+3. The application will now load with all images displaying correctly.
+
+### Why VSCode Preview Doesn't Show Images
+
+This project uses Vite's image import system where images are imported as ES modules:
+```javascript
+import starryNight from "../assets/images/starry-night.jpg";
+```
+
+Vite transforms these imports at build time. VSCode's built-in HTML preview cannot handle this transformation, so images won't load. You must use the Vite dev server.
+
+## Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist/` directory.
+
+## Project Structure
+
+- `src/App.jsx` - Main application component
+- `src/components/` - React components
+- `src/data/mockDb.js` - Mock data for paintings, users, artists
+- `src/assets/images/` - Local image assets
+- `src/utils/` - Utility functions for storage, validation, etc.
+
+## Features
+
+- Gallery browsing with filters
+- Painting details and quick view
+- Shopping cart and checkout
+- User authentication
+- Admin dashboard
+- Wishlist and compare functionality
+- Reviews and ratings

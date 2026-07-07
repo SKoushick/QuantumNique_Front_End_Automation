@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const PaintingCard = ({
   painting,
@@ -33,12 +34,22 @@ const PaintingCard = ({
 
   if (viewMode === 'list') {
     return (
-      <div className="glass-card painting-card-list">
+      <motion.div 
+        className="glass-card painting-card-list"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(0,0,0,0.1)" }}
+      >
         {/* Museum Frame Image Container */}
-        <div className="frame-container list-frame" onClick={() => onSelect(painting.id)}>
-          <img src={painting.images[0]} alt={painting.name} className="zoom-img" />
+        <motion.div 
+          className="frame-container list-frame" 
+          onClick={() => onSelect(painting.id)}
+          whileHover={{ scale: 1.02 }}
+        >
+          <img src={painting.images?.[0]} alt={painting.name} className="zoom-img" />
           <div className="collection-tag">{painting.collection}</div>
-        </div>
+        </motion.div>
 
         {/* Painting Meta Center */}
         <div className="card-list-details">
@@ -46,7 +57,13 @@ const PaintingCard = ({
             <span className="sku-label">{painting.sku}</span>
             {getStockBadge(painting.availability)}
           </div>
-          <h3 className="painting-title-link" onClick={() => onSelect(painting.id)}>{painting.name}</h3>
+          <motion.h3 
+            className="painting-title-link" 
+            onClick={() => onSelect(painting.id)}
+            whileHover={{ color: "var(--c-gold)" }}
+          >
+            {painting.name}
+          </motion.h3>
           <p className="artist-label-card">by {painting.artist}</p>
           <p className="card-description-summary">{painting.description}</p>
           <div className="spec-quick-list">
@@ -70,50 +87,67 @@ const PaintingCard = ({
           </div>
 
           <div className="card-actions-vertical">
-            <button
+            <motion.button
               className="gold-btn btn-sm"
               onClick={() => onAddToCart(painting)}
               disabled={painting.availability === 'Sold'}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
               Acquire Painting
-            </button>
+            </motion.button>
             <div className="card-action-subrow">
-              <button
+              <motion.button
                 className={`secondary-btn btn-icon ${isWishlisted ? 'liked' : ''}`}
                 onClick={() => onToggleWishlist(painting.id)}
                 title="Add to Wishlist"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <svg className="action-icon" fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 className={`secondary-btn btn-icon ${isCompared ? 'compared' : ''}`}
                 onClick={() => onToggleCompare(painting.id)}
                 title="Add to Comparison"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 className="secondary-btn btn-icon"
                 onClick={() => onQuickView(painting)}
                 title="Quick View"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
               >
                 👁
-              </button>
+              </motion.button>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   // Grid Layout
   return (
-    <div className="glass-card painting-card-grid">
+    <motion.div 
+      className="glass-card painting-card-grid"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      whileHover={{ y: -8, boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}
+    >
       {/* Framed Image */}
-      <div className="frame-container grid-frame">
+      <motion.div 
+        className="frame-container grid-frame"
+        whileHover={{ scale: 1.02 }}
+      >
         <img
-          src={painting.images[0]}
+          src={painting.images?.[0]}
           alt={painting.name}
           className="zoom-img"
           onClick={() => onSelect(painting.id)}
@@ -121,38 +155,57 @@ const PaintingCard = ({
         <div className="collection-tag">{painting.collection}</div>
         
         {/* Floating actions overlay */}
-        <div className="grid-overlay-actions">
-          <button
+        <motion.div 
+          className="grid-overlay-actions"
+          initial={{ opacity: 0 }}
+          whileHover={{ opacity: 1 }}
+        >
+          <motion.button
             className={`overlay-icon-btn ${isWishlisted ? 'active' : ''}`}
             onClick={() => onToggleWishlist(painting.id)}
             title="Wishlist"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             <svg fill={isWishlisted ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24" width="20" height="20"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             className={`overlay-icon-btn ${isCompared ? 'active' : ''}`}
             onClick={() => onToggleCompare(painting.id)}
             title="Compare Artworks"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             📊
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             className="overlay-icon-btn"
             onClick={() => onQuickView(painting)}
             title="Quick View"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             👁
-          </button>
-        </div>
-      </div>
+          </motion.button>
+        </motion.div>
+      </motion.div>
 
       {/* Frame Details */}
-      <div className="card-grid-meta" onClick={() => onSelect(painting.id)}>
+      <motion.div 
+        className="card-grid-meta" 
+        onClick={() => onSelect(painting.id)}
+        whileHover={{ backgroundColor: "rgba(245, 158, 11, 0.05)" }}
+      >
         <div className="card-header-meta">
           <span className="sku-label">{painting.sku}</span>
           {getStockBadge(painting.availability)}
         </div>
-        <h3 className="painting-title-link">{painting.name}</h3>
+        <motion.h3 
+          className="painting-title-link"
+          whileHover={{ color: "var(--c-gold)" }}
+        >
+          {painting.name}
+        </motion.h3>
         <p className="artist-label-card">by {painting.artist}</p>
         <div className="card-footer-meta">
           <span className="card-medium">{painting.medium}</span>
@@ -167,20 +220,22 @@ const PaintingCard = ({
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Acquisition button */}
       <div className="card-grid-footer">
-        <button
+        <motion.button
           className="gold-btn btn-full"
           onClick={() => onAddToCart(painting)}
           disabled={painting.availability === 'Sold'}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           <svg className="action-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
           Acquire Original
-        </button>
+        </motion.button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

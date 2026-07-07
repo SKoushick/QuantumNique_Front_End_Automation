@@ -1,7 +1,18 @@
+import starryNight from "../assets/images/starry-night.jpg";
+import starryNightOverTheRhone from "../assets/images/starry-night-over-the-rhone.jpg";
+import wheatfieldWithCypresses from "../assets/images/wheatfield-with-cypresses.jpg";
+import cafeTerraceAtNight from "../assets/images/cafe-terrace-at-night.jpg";
+import bedroom from "../assets/images/bedroom.jpg";
+import sunflowers from "../assets/images/sunflowers.jpg";
+import irises from "../assets/images/irises.jpg";
+import vanGoghSelfPortrait from "../assets/images/van-gogh-self-portrait.jpg";
+import userBuyer from "../assets/images/user-buyer.jpg";
+import userAdmin from "../assets/images/user-admin.jpg";
+
 export const initialArtist = {
   id: "artist_vvg",
   name: "Vincent van Gogh",
-  avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project.jpg",
+  avatar: vanGoghSelfPortrait,
   biography: "Vincent Willem van Gogh was a Dutch Post-Impressionist painter who posthumously became one of the most famous and influential figures in Western art history. In a decade, he created about 2,100 artworks, including around 860 oil paintings, most of them in the last two years of his life. They include landscapes, still lifes, portraits, and self-portraits, characterized by bold colors and dramatic, impulsive and expressive brushwork that contributed to the foundations of modern art.",
   statement: "I dream of painting and then I paint my dream. Color in a picture is like enthusiasm in life.",
   yearsOfExperience: "10 Years (Active 1880–1890)",
@@ -17,8 +28,8 @@ export const initialArtist = {
     { year: "Permanent", title: "Van Gogh Museum Exhibition", location: "Amsterdam, Netherlands" }
   ],
   studioPhotos: [
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vincent_van_Gogh_-_Caf%C3%A9_Terrace_at_Night_%28F_467%29_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_Caf%C3%A9_Terrace_at_Night_%28F_467%29_-_Google_Art_Project.jpg"
+    bedroom,
+    cafeTerraceAtNight
   ],
   socials: {
     instagram: "https://instagram.com/vangoghmuseum",
@@ -35,7 +46,7 @@ export const initialUsers = [
     password: "password123",
     phone: "+33 6 1234 5678",
     address: "12 Rue de la Paix, 75002 Paris, France",
-    profilePic: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80"
+    profilePic: userBuyer
   },
   {
     id: "user_admin",
@@ -44,7 +55,7 @@ export const initialUsers = [
     password: "adminpassword",
     phone: "+31 20 570 5200",
     address: "Museumplein 6, 1071 DJ Amsterdam, Netherlands",
-    profilePic: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80",
+    profilePic: userAdmin,
     isAdmin: true
   }
 ];
@@ -69,9 +80,9 @@ export const initialPaintings = [
     rating: 4.9,
     availability: "In Stock", // In Stock, Low Stock, Sold
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Vincent_van_Gogh_-_Starry_Night_Over_the_Rhone_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_Starry_Night_Over_the_Rhone_-_Google_Art_Project.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cx/Vincent_Van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg/1280px-Vincent_Van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg"
+      starryNight,
+      starryNightOverTheRhone,
+      wheatfieldWithCypresses
     ],
     specifications: {
       certificate: "Included (Authenticated by Van Gogh Museum)",
@@ -109,8 +120,8 @@ export const initialPaintings = [
     rating: 4.8,
     availability: "Low Stock",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Vincent_van_Gogh_-_Caf%C3%A9_Terrace_at_Night_%28F_467%29_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_Caf%C3%A9_Terrace_at_Night_%28F_467%29_-_Google_Art_Project.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg"
+      cafeTerraceAtNight,
+      bedroom
     ],
     specifications: {
       certificate: "Included (Authenticated by Kröller-Müller Museum)",
@@ -147,7 +158,7 @@ export const initialPaintings = [
     rating: 4.7,
     availability: "In Stock",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cx/Vincent_Van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg/1280px-Vincent_Van_Gogh_-_Wheat_Field_with_Cypresses_-_Google_Art_Project.jpg"
+      wheatfieldWithCypresses
     ],
     specifications: {
       certificate: "Included (Authenticated by The National Gallery, London)",
@@ -184,7 +195,7 @@ export const initialPaintings = [
     rating: 4.95,
     availability: "Sold",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Vincent_van_Gogh_-_Sunflowers_-_VGM_F458.jpg/1280px-Vincent_van_Gogh_-_Sunflowers_-_VGM_F458.jpg"
+      sunflowers
     ],
     specifications: {
       certificate: "Included (Authenticated by Van Gogh Museum)",
@@ -221,7 +232,7 @@ export const initialPaintings = [
     rating: 4.85,
     availability: "In Stock",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Vincent_van_Gogh_-_Starry_Night_Over_the_Rhone_-_Google_Art_Project.jpg/1280px-Vincent_van_Gogh_-_Starry_Night_Over_the_Rhone_-_Google_Art_Project.jpg"
+      starryNightOverTheRhone
     ],
     specifications: {
       certificate: "Included (Authenticated by Musée d'Orsay)",
@@ -258,7 +269,7 @@ export const initialPaintings = [
     rating: 4.75,
     availability: "In Stock",
     images: [
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Irises-Vincent_van_Gogh.jpg/1280px-Irises-Vincent_van_Gogh.jpg"
+      irises
     ],
     specifications: {
       certificate: "Included (Authenticated by J. Paul Getty Museum)",

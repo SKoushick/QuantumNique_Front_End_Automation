@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const FilterSidebar = ({
   priceRange,
@@ -29,19 +30,41 @@ const FilterSidebar = ({
   };
 
   const formatPrice = (p) => {
-    if (p >= 1000000) return `$${(p / 1000000).toFixed(1)}M`;
-    return `$${p.toLocaleString()}`;
+    if (p >= 1000000) return `₹${(p / 1000000).toFixed(1)}M`;
+    return `₹${p.toLocaleString()}`;
   };
 
   return (
-    <aside className="filter-sidebar glass-panel">
-      <div className="filter-header">
+    <motion.aside 
+      className="filter-sidebar glass-panel"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <motion.div 
+        className="filter-header"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
         <h3>Exhibition Filters</h3>
-        <button className="reset-btn-link" onClick={onReset}>Clear All</button>
-      </div>
+        <motion.button 
+          className="reset-btn-link" 
+          onClick={onReset}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Clear All
+        </motion.button>
+      </motion.div>
 
       {/* Price Range Slider */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+      >
         <h4>Price Cap</h4>
         <div className="price-slider-container">
           <input
@@ -54,18 +77,30 @@ const FilterSidebar = ({
             className="slider-accent"
           />
           <div className="price-labels">
-            <span>$0</span>
+            <span>₹0</span>
             <span className="current-price-label">{formatPrice(priceRange)}</span>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Mediums */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <h4>Artistic Medium</h4>
         <div className="checkbox-group">
-          {mediums.map(m => (
-            <label key={m} className="custom-checkbox">
+          {mediums.map((m, i) => (
+            <motion.label 
+              key={m} 
+              className="custom-checkbox"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2 + i * 0.05 }}
+              whileHover={{ x: 5 }}
+            >
               <input
                 type="checkbox"
                 checked={selectedMediums.includes(m)}
@@ -73,17 +108,29 @@ const FilterSidebar = ({
               />
               <span className="checkmark"></span>
               {m}
-            </label>
+            </motion.label>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Styles */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
+      >
         <h4>Artwork Style</h4>
         <div className="checkbox-group">
-          {styles.map(s => (
-            <label key={s} className="custom-checkbox">
+          {styles.map((s, i) => (
+            <motion.label 
+              key={s} 
+              className="custom-checkbox"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.25 + i * 0.05 }}
+              whileHover={{ x: 5 }}
+            >
               <input
                 type="checkbox"
                 checked={selectedStyles.includes(s)}
@@ -91,17 +138,29 @@ const FilterSidebar = ({
               />
               <span className="checkmark"></span>
               {s}
-            </label>
+            </motion.label>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Orientation */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
         <h4>Frame Orientation</h4>
         <div className="checkbox-group">
-          {orientations.map(o => (
-            <label key={o} className="custom-checkbox">
+          {orientations.map((o, i) => (
+            <motion.label 
+              key={o} 
+              className="custom-checkbox"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 + i * 0.05 }}
+              whileHover={{ x: 5 }}
+            >
               <input
                 type="checkbox"
                 checked={selectedOrientations.includes(o)}
@@ -109,17 +168,29 @@ const FilterSidebar = ({
               />
               <span className="checkmark"></span>
               {o}
-            </label>
+            </motion.label>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Availability */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+      >
         <h4>Availability</h4>
         <div className="checkbox-group">
-          {availabilities.map(a => (
-            <label key={a} className="custom-checkbox">
+          {availabilities.map((a, i) => (
+            <motion.label 
+              key={a} 
+              className="custom-checkbox"
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.35 + i * 0.05 }}
+              whileHover={{ x: 5 }}
+            >
               <input
                 type="checkbox"
                 checked={selectedAvailability.includes(a)}
@@ -127,27 +198,37 @@ const FilterSidebar = ({
               />
               <span className="checkmark"></span>
               {a}
-            </label>
+            </motion.label>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Rating */}
-      <div className="filter-section">
+      <motion.div 
+        className="filter-section"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
         <h4>Minimum Rating</h4>
         <div className="rating-select-group">
-          {[4.5, 4.7, 4.8, 4.9].map(r => (
-            <button
+          {[4.5, 4.7, 4.8, 4.9].map((r, i) => (
+            <motion.button
               key={r}
               className={`rating-pill-btn ${minRating === r ? 'active' : ''}`}
               onClick={() => setMinRating(minRating === r ? null : r)}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.4 + i * 0.05 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               ★ {r}+
-            </button>
+            </motion.button>
           ))}
         </div>
-      </div>
-    </aside>
+      </motion.div>
+    </motion.aside>
   );
 };
 
