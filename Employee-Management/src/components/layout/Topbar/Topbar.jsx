@@ -8,12 +8,14 @@ import {
   Search, Bell, Sun, Moon, Menu, ChevronDown, LogOut,
   User, Settings, Command, X, Check
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { useApp } from '../../context/AppContext';
-import { getInitials, getAvatarColor, formatRelative } from '../../utils/formatters';
+import { useAuth } from '../../../context/AuthContext';
+import { useApp } from '../../../context/AppContext';
+import { getInitials, getAvatarColor, formatRelative } from '../../../utils/formatters';
 import './Topbar.css';
 
-export default function Topbar({ onMenuToggle, collapsed }) {
+const THEME_KEY = 'ems_theme';
+
+export default function Topbar({ onMenuToggle, collapsed, onOpenCommandPalette }) {
   const { user, logout } = useAuth();
   const { notifications, markNotificationRead, markAllNotificationsRead } = useApp();
   const navigate = useNavigate();
@@ -22,7 +24,7 @@ export default function Topbar({ onMenuToggle, collapsed }) {
   const [searchQuery, setSearchQuery]         = useState('');
   const [notifOpen, setNotifOpen]             = useState(false);
   const [userMenuOpen, setUserMenuOpen]       = useState(false);
-  const [theme, setTheme]                     = useState('dark');
+  const [theme, setTheme]                     = useState(() => localStorage.getItem(THEME_KEY) || 'dark');
 
   const searchRef = useRef(null);
   const notifRef  = useRef(null);
@@ -40,14 +42,9 @@ export default function Topbar({ onMenuToggle, collapsed }) {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Keyboard shortcut: Ctrl+K for search
+  // Keyboard shortcut: Ctrl+K opens command palette
   useEffect(() => {
     const handler = (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        setSearchOpen(true);
-        setTimeout(() => searchRef.current?.focus(), 50);
-      }
       if (e.key === 'Escape') {
         setSearchOpen(false);
         setSearchQuery('');
@@ -57,10 +54,13 @@ export default function Topbar({ onMenuToggle, collapsed }) {
     return () => document.removeEventListener('keydown', handler);
   }, []);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(THEME_KEY, theme);
+  }, [theme]);
+
   const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark';
-    setTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   };
 
   const fullName = `${user?.firstName} ${user?.lastName}`;
@@ -90,13 +90,15 @@ export default function Topbar({ onMenuToggle, collapsed }) {
             ref={searchRef}
             type="text"
             className="topbar__search-input"
-            placeholder="Search employees, tasks, documents…"
+            placeholder="Search pages and actions…"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setSearchOpen(true)}
-            aria-label="Global search"
+            onFocus={() => { setSearchOpen(true); onOpenCommandPalette?.(); }}
+            onClick={() => onOpenCommandPalette?.()}
+            readOnly
+            aria-label="Open command palette"
           />
-          <kbd className="topbar__search-shortcut" aria-label="Press Ctrl+K to search">
+          <kbd className="topbar__search-shortcut" aria-label="Press Ctrl+K to open command palette" onClick={() => onOpenCommandPalette?.()} style={{ cursor: 'pointer' }}>
             <Command size={11} /> K
           </kbd>
           {searchQuery && (

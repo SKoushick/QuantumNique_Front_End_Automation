@@ -117,13 +117,14 @@ export const NAV_ITEMS = [
   { path: '/leave',         label: 'Leave',           icon: 'CalendarOff',     roles: ['admin','hr','manager','employee'] },
   { path: '/payroll',       label: 'Payroll',         icon: 'DollarSign',      roles: ['admin','hr'] },
   { path: '/tasks',         label: 'Tasks',           icon: 'CheckSquare',     roles: ['admin','hr','manager','employee'] },
+  { path: '/projects',      label: 'Projects',        icon: 'FolderKanban',    roles: ['admin','hr','manager','employee'] },
   { path: '/performance',   label: 'Performance',     icon: 'TrendingUp',      roles: ['admin','hr','manager','employee'] },
   { path: '/announcements', label: 'Announcements',   icon: 'Megaphone',       roles: ['admin','hr','manager','employee'] },
   { path: '/documents',     label: 'Documents',       icon: 'FileText',        roles: ['admin','hr','manager','employee'] },
   { path: '/assets',        label: 'Assets',          icon: 'Package',         roles: ['admin','hr'] },
   { path: '/reports',       label: 'Reports',         icon: 'BarChart2',       roles: ['admin','hr','manager'] },
   { path: '/audit',         label: 'Audit Log',       icon: 'Shield',          roles: ['admin'] },
-  { path: '/settings',      label: 'Settings',        icon: 'Settings',        roles: ['admin','hr'] },
+  { path: '/settings',      label: 'Settings',        icon: 'Settings',        roles: ['admin','hr','manager','employee'] },
 ];
 
 // ── Pagination ────────────────────────────────────────────────────────────────

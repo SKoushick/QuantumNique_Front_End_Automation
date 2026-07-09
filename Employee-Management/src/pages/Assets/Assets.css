@@ -1,0 +1,111 @@
+/* Assets page */
+
+.asset-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4);
+  transition: var(--transition-base);
+}
+
+.asset-card:hover {
+  border-color: var(--border-emphasis);
+  box-shadow: var(--shadow-sm);
+}
+
+.asset-card__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-3);
+}
+
+.asset-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
+  background: rgba(66, 133, 244, 0.12);
+  color: var(--color-primary-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.asset-card__name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.asset-serial {
+  font-family: monospace;
+  font-size: var(--text-xs);
+}
+
+.asset-card__rows {
+  margin: var(--space-3) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.asset-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+.asset-status--assigned {
+  color: var(--color-primary-400);
+  background: rgba(66, 133, 244, 0.12);
+}
+
+.asset-status--available {
+  color: var(--color-success-400);
+  background: rgba(52, 168, 83, 0.12);
+}
+
+.asset-card__holder {
+  margin: var(--space-3) 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.asset-holder {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.asset-holder__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.asset-holder p {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.asset-holder span {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.asset-available {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-style: italic;
+}

@@ -2,19 +2,22 @@
  * Dashboard — main analytics overview page
  */
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  Users, UserCheck, CalendarOff, Briefcase, TrendingUp, TrendingDown,
+  Users, UserCheck, CalendarOff, Briefcase, TrendingUp,
   ArrowUp, ArrowDown, Minus, UserPlus, CalendarCheck, Star, DollarSign,
   Package, Megaphone, Activity, Clock, ChevronRight
 } from 'lucide-react';
 import {
-  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
 import { useAuth } from '../../context/AuthContext';
+import { useApp } from '../../context/AppContext';
 import { mockDashboardStats } from '../../data/mockData';
 import { formatCurrency, formatDate, getAvatarColor, getInitials } from '../../utils/formatters';
+import { DEPARTMENTS } from '../../utils/constants';
 import './Dashboard.css';
 
 // ── Stat card ──────────────────────────────────────────────────────────────────
@@ -71,9 +74,64 @@ const ACTIVITY_COLORS = {
 };
 
 export default function Dashboard() {
-  const { user }  = useAuth();
-  const stats     = mockDashboardStats;
+  const { user, isHR } = useAuth();
+  const { employees, leaves, attendance, payroll } = useApp();
+  const navigate  = useNavigate();
   const [activeTab, setActiveTab] = useState('attendance');
+
+  const stats = useMemo(() => {
+    const today = new Date().toISOString().split('T')[0];
+    const activeEmployees = employees.filter((e) => e.status === 'active').length;
+    const onLeave = leaves.filter((l) => l.status === 'approved' && l.startDate <= today && l.endDate >= today).length;
+    const todayAttendance = attendance.filter((a) => a.date === today && a.status === 'present').length;
+    const pendingLeaves = leaves.filter((l) => l.status === 'pending').length;
+
+    const headcountByDept = DEPARTMENTS.map((d) => ({
+      dept: d.name,
+      count: employees.filter((e) => e.department === d.id).length,
+      color: d.color,
+    })).filter((d) => d.count > 0);
+
+    const leaveDistribution = [
+      { type: 'Annual', count: leaves.filter((l) => l.type === 'annual').length },
+      { type: 'Sick', count: leaves.filter((l) => l.type === 'sick').length },
+      { type: 'Casual', count: leaves.filter((l) => l.type === 'casual').length },
+      { type: 'Maternity', count: leaves.filter((l) => l.type === 'maternity').length },
+      { type: 'Other', count: leaves.filter((l) => !['annual','sick','casual','maternity'].includes(l.type)).length },
+    ];
+
+    const upcomingBirthdays = employees
+      .filter((e) => e.dateOfBirth)
+      .map((e) => {
+        const dob = new Date(e.dateOfBirth);
+        const now = new Date();
+        const next = new Date(now.getFullYear(), dob.getMonth(), dob.getDate());
+        if (next < now) next.setFullYear(now.getFullYear() + 1);
+        const daysLeft = Math.ceil((next - now) / 86400000);
+        const dept = DEPARTMENTS.find((d) => d.id === e.department)?.name || e.department;
+        return { name: `${e.firstName} ${e.lastName}`, date: formatDate(dob, 'MMM d'), daysLeft, dept };
+      })
+      .sort((a, b) => a.daysLeft - b.daysLeft)
+      .slice(0, 3);
+
+    const payrollTotal = payroll.reduce((s, p) => s + (p.netPay || 0), 0);
+
+    return {
+      ...mockDashboardStats,
+      totalEmployees: employees.length,
+      activeToday: todayAttendance || mockDashboardStats.activeToday,
+      onLeave: onLeave || mockDashboardStats.onLeave,
+      avgAttendance: employees.length
+        ? Math.round((todayAttendance / employees.length) * 1000) / 10
+        : mockDashboardStats.avgAttendance,
+      headcountByDept: headcountByDept.length ? headcountByDept : mockDashboardStats.headcountByDept,
+      leaveDistribution,
+      upcomingBirthdays: upcomingBirthdays.length ? upcomingBirthdays : mockDashboardStats.upcomingBirthdays,
+      pendingLeaves,
+      payrollTotal,
+      activeEmployees,
+    };
+  }, [employees, leaves, attendance, payroll]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -95,10 +153,12 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="dashboard__quick-actions">
-          <button className="dash-action-btn" onClick={() => window.location.href = '/employees/add'}>
-            <UserPlus size={16} /> Add Employee
-          </button>
-          <button className="dash-action-btn dash-action-btn--secondary" onClick={() => window.location.href = '/leave'}>
+          {isHR() && (
+            <button className="dash-action-btn" onClick={() => navigate('/employees/add')}>
+              <UserPlus size={16} /> Add Employee
+            </button>
+          )}
+          <button className="dash-action-btn dash-action-btn--secondary" onClick={() => navigate('/leave')}>
             <CalendarOff size={16} /> View Leaves
           </button>
         </div>
@@ -116,7 +176,7 @@ export default function Dashboard() {
         />
         <StatCard
           icon={CalendarOff} label="On Leave" value={stats.onLeave}
-          change={-0.8} changeLabel="2 pending approval" color="var(--color-warning-500)"
+          change={-0.8} changeLabel={`${stats.pendingLeaves} pending approval`} color="var(--color-warning-500)"
         />
         <StatCard
           icon={Briefcase} label="Open Positions" value={stats.openPositions}

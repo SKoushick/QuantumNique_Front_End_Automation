@@ -368,3 +368,34 @@
   .auth-hero { display: none; }
   .auth-form-panel { padding: var(--space-8) var(--space-6); }
 }
+
+.auth-container--narrow { max-width: 480px; margin: 0 auto; grid-template-columns: 1fr; }
+.auth-form-panel--full { border-radius: var(--radius-2xl); }
+.auth-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-4);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+.auth-back-link:hover { color: var(--color-primary-400); }
+.auth-hero__logo--sm { margin-bottom: var(--space-4); }
+.auth-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  background: rgba(52, 168, 83, 0.1);
+  border: 1px solid rgba(52, 168, 83, 0.3);
+  border-radius: var(--radius-xl);
+  text-align: center;
+  color: var(--color-success-400);
+}
+.auth-success p { color: var(--text-secondary); }
+.auth-submit--link { text-decoration: none; margin-top: var(--space-4); }

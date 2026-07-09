@@ -3,7 +3,7 @@
  */
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Zap, Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
@@ -152,7 +152,7 @@ export default function Login() {
               <div className="auth-field">
                 <label className="auth-label" htmlFor="login-password">
                   Password
-                  <a href="/forgot-password" className="auth-label-link">Forgot password?</a>
+                  <Link to="/forgot-password" className="auth-label-link">Forgot password?</Link>
                 </label>
                 <div className="auth-input-wrap">
                   <Lock size={16} className="auth-input-icon" aria-hidden="true" />

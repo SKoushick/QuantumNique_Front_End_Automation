@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import './App.css';
+import "./App.css";
 import {
   initStorage, getPaintings, getTheme, setTheme as saveTheme,
   getCurrentUser, setCurrentUser as saveCurrentUser,

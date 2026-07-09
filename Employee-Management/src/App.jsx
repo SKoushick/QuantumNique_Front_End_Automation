@@ -1,122 +1,76 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { lazy, Suspense } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import AppLayout from './components/layout/AppLayout/AppLayout';
 
-function App() {
-  const [count, setCount] = useState(0)
+const Login          = lazy(() => import('./pages/Auth/Login'));
+const ForgotPassword = lazy(() => import('./pages/Auth/ForgotPassword'));
+const ResetPassword  = lazy(() => import('./pages/Auth/ResetPassword'));
+const Dashboard      = lazy(() => import('./pages/Dashboard/Dashboard'));
+const EmployeeList   = lazy(() => import('./pages/Employees/EmployeeList'));
+const EmployeeDetail = lazy(() => import('./pages/Employees/EmployeeDetail'));
+const EmployeeForm   = lazy(() => import('./pages/Employees/EmployeeForm'));
+const Departments    = lazy(() => import('./pages/Departments/Departments'));
+const Attendance     = lazy(() => import('./pages/Attendance/Attendance'));
+const Leave          = lazy(() => import('./pages/Leave/Leave'));
+const Payroll        = lazy(() => import('./pages/Payroll/Payroll'));
+const Tasks          = lazy(() => import('./pages/Tasks/Tasks'));
+const Projects       = lazy(() => import('./pages/Projects/Projects'));
+const Performance    = lazy(() => import('./pages/Performance/Performance'));
+const Announcements  = lazy(() => import('./pages/Announcements/Announcements'));
+const Documents      = lazy(() => import('./pages/Documents/Documents'));
+const Assets         = lazy(() => import('./pages/Assets/Assets'));
+const Reports        = lazy(() => import('./pages/Reports/Reports'));
+const Audit          = lazy(() => import('./pages/Audit/Audit'));
+const Settings       = lazy(() => import('./pages/Settings/Settings'));
 
+function PageLoader() {
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    <div className="page-loader" role="status" aria-live="polite">
+      <div className="page-loader__spinner" aria-hidden="true" />
+    </div>
+  );
 }
 
-export default App
+function PublicOnly({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+  if (loading) return <PageLoader />;
+  if (isAuthenticated) return <Navigate to="/" replace />;
+  return children;
+}
+
+export default function App() {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/login" element={<PublicOnly><Login /></PublicOnly>} />
+        <Route path="/forgot-password" element={<PublicOnly><ForgotPassword /></PublicOnly>} />
+        <Route path="/reset-password" element={<PublicOnly><ResetPassword /></PublicOnly>} />
+
+        <Route element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+          <Route index element={<Dashboard />} />
+          <Route path="employees" element={<ProtectedRoute roles={['admin','hr','manager']}><EmployeeList /></ProtectedRoute>} />
+          <Route path="employees/add" element={<ProtectedRoute roles={['admin','hr']}><EmployeeForm /></ProtectedRoute>} />
+          <Route path="employees/:id/edit" element={<ProtectedRoute roles={['admin','hr']}><EmployeeForm /></ProtectedRoute>} />
+          <Route path="employees/:id" element={<ProtectedRoute roles={['admin','hr','manager']}><EmployeeDetail /></ProtectedRoute>} />
+          <Route path="departments" element={<ProtectedRoute roles={['admin','hr']}><Departments /></ProtectedRoute>} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="leave" element={<Leave />} />
+          <Route path="payroll" element={<ProtectedRoute roles={['admin','hr']}><Payroll /></ProtectedRoute>} />
+          <Route path="tasks" element={<Tasks />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="performance" element={<Performance />} />
+          <Route path="announcements" element={<Announcements />} />
+          <Route path="documents" element={<Documents />} />
+          <Route path="assets" element={<ProtectedRoute roles={['admin','hr']}><Assets /></ProtectedRoute>} />
+          <Route path="reports" element={<ProtectedRoute roles={['admin','hr','manager']}><Reports /></ProtectedRoute>} />
+          <Route path="audit" element={<ProtectedRoute roles={['admin']}><Audit /></ProtectedRoute>} />
+          <Route path="settings" element={<ProtectedRoute roles={['admin','hr','manager','employee']}><Settings /></ProtectedRoute>} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Suspense>
+  );
+}

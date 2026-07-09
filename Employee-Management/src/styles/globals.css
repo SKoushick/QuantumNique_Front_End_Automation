@@ -4,6 +4,7 @@
 
 @import './design-system.css';
 @import './animations.css';
+@import './modules.css';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -27,6 +28,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* ── Scrollbar ────────────────────────────────────────────────────────────── */

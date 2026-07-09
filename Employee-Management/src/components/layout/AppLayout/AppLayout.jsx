@@ -7,11 +7,14 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import Topbar from '../Topbar/Topbar';
 import ToastContainer from '../../ui/Toast/ToastContainer';
+import CommandPalette from '../../ui/CommandPalette/CommandPalette';
+import { useCommandPalette } from '../../../hooks/useCommandPalette';
 import './AppLayout.css';
 
 export default function AppLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { open: paletteOpen, setOpen: setPaletteOpen } = useCommandPalette();
 
   const toggleCollapse = () => setCollapsed((p) => !p);
   const toggleMobile   = () => setMobileOpen((p) => !p);
@@ -37,6 +40,7 @@ export default function AppLayout() {
         <Topbar
           onMenuToggle={toggleMobile}
           collapsed={collapsed}
+          onOpenCommandPalette={() => setPaletteOpen(true)}
         />
 
         <main className="app-layout__content" id="main-content" role="main">
@@ -47,6 +51,7 @@ export default function AppLayout() {
       </div>
 
       <ToastContainer />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   );
 }

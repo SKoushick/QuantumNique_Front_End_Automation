@@ -2,7 +2,7 @@
  * Notification/Toast Context — global toast notifications
  */
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import { createContext, useContext, useState, useCallback } from 'react';
 
 const NotificationContext = createContext(null);
 
@@ -11,6 +11,10 @@ let toastId = 0;
 export function NotificationProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
+  const removeToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const addToast = useCallback((message, type = 'info', duration = 4000) => {
     const id = ++toastId;
     setToasts((prev) => [...prev, { id, message, type, duration }]);
@@ -18,11 +22,7 @@ export function NotificationProvider({ children }) {
       setTimeout(() => removeToast(id), duration);
     }
     return id;
-  }, []);
-
-  const removeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
+  }, [removeToast]);
 
   const success = useCallback((msg, d) => addToast(msg, 'success', d), [addToast]);
   const error   = useCallback((msg, d) => addToast(msg, 'error', d), [addToast]);

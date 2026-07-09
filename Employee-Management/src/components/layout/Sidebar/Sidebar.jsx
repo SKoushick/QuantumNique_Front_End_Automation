@@ -6,17 +6,17 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Users, Building2, Clock, CalendarOff, DollarSign,
-  CheckSquare, TrendingUp, Megaphone, FileText, Package, BarChart2,
-  Shield, Settings, ChevronLeft, ChevronRight, LogOut, Bell,
-  Zap, User
+  CheckSquare, FolderKanban, TrendingUp, Megaphone, FileText, Package, BarChart2,
+  Shield, Settings, ChevronLeft, ChevronRight, LogOut,
+  Zap
 } from 'lucide-react';
-import { useAuth } from '../../context/AuthContext';
-import { getInitials, getAvatarColor } from '../../utils/formatters';
+import { useAuth } from '../../../context/AuthContext';
+import { getInitials, getAvatarColor } from '../../../utils/formatters';
 import './Sidebar.css';
 
 const ICON_MAP = {
   LayoutDashboard, Users, Building2, Clock, CalendarOff, DollarSign,
-  CheckSquare, TrendingUp, Megaphone, FileText, Package, BarChart2,
+  CheckSquare, FolderKanban, TrendingUp, Megaphone, FileText, Package, BarChart2,
   Shield, Settings,
 };
 
@@ -41,6 +41,7 @@ const NAV_SECTIONS = [
     title: 'Work',
     items: [
       { path: '/tasks',       label: 'Tasks',         icon: 'CheckSquare',     roles: ['admin','hr','manager','employee'] },
+      { path: '/projects',    label: 'Projects',      icon: 'FolderKanban',    roles: ['admin','hr','manager','employee'] },
       { path: '/performance', label: 'Performance',   icon: 'TrendingUp',      roles: ['admin','hr','manager','employee'] },
     ],
   },
@@ -57,7 +58,7 @@ const NAV_SECTIONS = [
     items: [
       { path: '/reports',  label: 'Reports',   icon: 'BarChart2', roles: ['admin','hr','manager'] },
       { path: '/audit',    label: 'Audit Log', icon: 'Shield',    roles: ['admin'] },
-      { path: '/settings', label: 'Settings',  icon: 'Settings',  roles: ['admin','hr'] },
+      { path: '/settings', label: 'Settings',  icon: 'Settings',  roles: ['admin','hr','manager','employee'] },
     ],
   },
 ];
