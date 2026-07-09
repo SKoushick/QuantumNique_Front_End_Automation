@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import MembershipTierDisplay from './MembershipTierDisplay';
 
 export default function EnhancedUserProfile({ currentUser, orders, userProfile, membershipTier }) {
   const [activeTab, setActiveTab] = useState('overview');
@@ -394,6 +395,7 @@ export default function EnhancedUserProfile({ currentUser, orders, userProfile, 
                 <div className="stat-label">Member Discount</div>
               </div>
             </div>
+            <MembershipTierDisplay userProfile={userProfile} currentUser={currentUser} />
           </>
         )}
 

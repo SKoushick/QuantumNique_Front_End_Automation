@@ -47,6 +47,60 @@ export function AppProvider({ children }) {
     } catch { /* ignore */ }
   }, []);
 
+  // Fetch employees from mockapi.io API on mount
+  useEffect(() => {
+    fetch('https://6a4b3684f5eab0bb6b62570b.mockapi.io/Adimai')
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const deptMap = {
+            'Engineering': 'd1',
+            'Product': 'd2',
+            'Design': 'd3',
+            'Marketing': 'd4',
+            'Sales': 'd5',
+            'Human Resources': 'd6',
+            'Finance': 'd7',
+            'Operations': 'd8',
+            'Legal': 'd9',
+            'Customer Success': 'd10',
+          };
+          const mapped = data.map((item) => {
+            const [first, ...lastArr] = (item.name || '').split(' ');
+            const last = lastArr.join(' ');
+            return {
+              id: String(item.id),
+              employeeId: item.employeeId || `EMS-${String(item.id).padStart(3, '0')}`,
+              firstName: item.firstName || first || 'Anonymous',
+              lastName: item.lastName || last || '',
+              email: item.email || item.Email || 'no-email@example.com',
+              phone: item.phone || '+91 99999 99999',
+              role: item.role || 'employee',
+              department: item.department || deptMap[item.Department] || 'd1',
+              departmentName: item.departmentName || item.Department || 'Engineering',
+              designation: item.designation || 'Software Engineer',
+              employmentType: item.employmentType || 'Full-time',
+              status: item.status || 'active',
+              joinDate: item.joinDate || new Date().toISOString().split('T')[0],
+              salary: Number(item.salary) || 80000,
+              location: item.location || 'Remote',
+              workMode: item.workMode || 'Remote',
+              bio: item.bio || '',
+              performanceScore: Number(item.performanceScore) || 3.0,
+              leaveBalance: item.leaveBalance || { annual: 20, sick: 10, casual: 5 },
+              skills: item.skills || [],
+              education: item.education || [],
+              documents: item.documents || [],
+            };
+          });
+          setEmployees(mapped);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to fetch employees from MockAPI:', err);
+      });
+  }, []);
+
   const addAuditEntry = useCallback((entry) => {
     setAuditLog((prev) => [{
       id: `aud${Date.now()}`,
@@ -58,26 +112,80 @@ export function AppProvider({ children }) {
   }, []);
 
   const addEmployee = useCallback((emp) => {
+    const localId = String(Date.now());
     const newEmp = {
       ...emp,
-      id: `emp${Date.now()}`,
-      employeeId: `EMS-${String(employees.length + 1).padStart(3, '0')}`,
+      id: localId,
+      employeeId: emp.employeeId || `EMS-${String(employees.length + 1).padStart(3, '0')}`,
       status: emp.status || 'active',
       leaveBalance: emp.leaveBalance || { annual: 20, sick: 10, casual: 5 },
       skills: emp.skills || [],
       education: emp.education || [],
       documents: emp.documents || [],
     };
+    
+    // Optimistic local state update
     setEmployees((prev) => [newEmp, ...prev]);
+
+    // Send payload to MockAPI
+    const payload = {
+      ...newEmp,
+      name: `${newEmp.firstName} ${newEmp.lastName}`.trim(),
+      Department: newEmp.departmentName || 'Engineering',
+      Email: newEmp.email,
+    };
+
+    fetch('https://6a4b3684f5eab0bb6b62570b.mockapi.io/Adimai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.id) {
+          // Update temp localId with MockAPI generated id
+          setEmployees((prev) =>
+            prev.map((e) => (e.id === localId ? { ...e, id: String(data.id) } : e))
+          );
+        }
+      })
+      .catch((err) => console.error('Failed to add employee via MockAPI:', err));
+
     return newEmp;
   }, [employees.length]);
 
   const updateEmployee = useCallback((id, updates) => {
-    setEmployees((prev) => prev.map((e) => e.id === id ? { ...e, ...updates } : e));
+    setEmployees((prev) => prev.map((e) => (e.id === id ? { ...e, ...updates } : e)));
+
+    const payload = { ...updates };
+    if (updates.firstName || updates.lastName) {
+      payload.name = `${updates.firstName || ''} ${updates.lastName || ''}`.trim();
+    }
+    if (updates.departmentName) {
+      payload.Department = updates.departmentName;
+    }
+    if (updates.email) {
+      payload.Email = updates.email;
+    }
+
+    fetch(`https://6a4b3684f5eab0bb6b62570b.mockapi.io/Adimai/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch((err) => console.error('Failed to update employee via MockAPI:', err));
   }, []);
 
   const deleteEmployee = useCallback((id) => {
     setEmployees((prev) => prev.filter((e) => e.id !== id));
+
+    fetch(`https://6a4b3684f5eab0bb6b62570b.mockapi.io/Adiming/${id}`, {
+      method: 'DELETE',
+    }).catch((err) => {
+      // Try fallback URL /Adimai
+      fetch(`https://6a4b3684f5eab0bb6b62570b.mockapi.io/Adimai/${id}`, {
+        method: 'DELETE',
+      }).catch((e) => console.error('Failed to delete employee via MockAPI:', e));
+    });
   }, []);
 
   const addDepartment = useCallback((dept) => {

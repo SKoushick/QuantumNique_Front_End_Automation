@@ -9,7 +9,8 @@ import {
   BookOpen, 
   FileSpreadsheet,
   Award,
-  History
+  History,
+  UserPlus
 } from 'lucide-react';
 import { apiService } from '../services/api';
 
@@ -179,6 +180,22 @@ export default function Dashboard({ currentTeacher, setActiveTab, triggerNotific
           >
             <FileSpreadsheet className="h-6 w-6 text-sky-500 mb-2 group-hover:scale-105 transition-transform" />
             <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Download Reports</span>
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('bulk_import')} 
+            className="flex flex-col items-center justify-center p-4 bg-violet-50/40 hover:bg-violet-50 dark:bg-slate-800/30 dark:hover:bg-slate-800 rounded-2xl border border-violet-100/30 dark:border-slate-700/20 text-center transition-all group active:scale-95"
+          >
+            <UserPlus className="h-6 w-6 text-violet-500 mb-2 group-hover:scale-105 transition-transform" />
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Bulk Import</span>
+          </button>
+
+          <button 
+            onClick={() => setActiveTab('certificates')} 
+            className="flex flex-col items-center justify-center p-4 bg-amber-50/40 hover:bg-amber-50 dark:bg-slate-800/30 dark:hover:bg-slate-800 rounded-2xl border border-amber-100/30 dark:border-slate-700/20 text-center transition-all group active:scale-95"
+          >
+            <Award className="h-6 w-6 text-amber-500 mb-2 group-hover:scale-105 transition-transform" />
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">Certificates</span>
           </button>
         </div>
       </div>

@@ -27,6 +27,7 @@ import AdminDashboard from './components/AdminDashboard';
 import AuthModal from './components/AuthModal';
 import ReviewsSection from './components/ReviewsSection';
 import Checkout from './components/Checkout';
+import TestimonialsSection from './components/TestimonialsSection';
 function App() {
   // Global State — declared FIRST so useEffects below can safely reference them
   const [theme, setThemeState] = useState(getTheme());
@@ -552,6 +553,7 @@ function App() {
                 })}
               </div>
             </section>
+            <TestimonialsSection />
           </>
         )}
 
@@ -724,7 +726,12 @@ function App() {
 
         {/* ADMIN DASHBOARD */}
         {activePage === 'admin' && currentUser?.isAdmin && (
-          <AdminDashboard onRefreshPaintings={refreshPaintings} />
+          <AdminDashboard 
+            onRefreshPaintings={refreshPaintings} 
+            orders={orders} 
+            paintings={paintings} 
+            currentUser={currentUser} 
+          />
         )}
       </div>
 

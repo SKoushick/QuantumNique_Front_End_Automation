@@ -15,6 +15,8 @@ import AbsentStudents from './pages/AbsentStudents';
 import History from './pages/History';
 import Defaulters from './pages/Defaulters';
 import Reports from './pages/Reports';
+import BulkImport from './pages/BulkImport';
+import Certificates from './pages/Certificates';
 
 import { apiService } from './services/api';
 
@@ -156,6 +158,20 @@ export default function App() {
       case 'reports':
         return (
           <Reports 
+            currentTeacher={currentTeacher} 
+            triggerNotification={triggerNotification} 
+          />
+        );
+      case 'bulk_import':
+        return (
+          <BulkImport 
+            currentTeacher={currentTeacher} 
+            triggerNotification={triggerNotification} 
+          />
+        );
+      case 'certificates':
+        return (
+          <Certificates 
             currentTeacher={currentTeacher} 
             triggerNotification={triggerNotification} 
           />

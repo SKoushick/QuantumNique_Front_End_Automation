@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { getPaintings, savePainting, deletePainting, getReviews, getCommissions, updateCommissionStatus } from '../utils/storage';
+import AnalyticsDashboard from './AnalyticsDashboard';
 
-const AdminDashboard = ({ onRefreshPaintings }) => {
+const AdminDashboard = ({ onRefreshPaintings, orders, currentUser }) => {
   const [paintings, setPaintings] = useState(getPaintings() || []);
   const [commissions, setCommissions] = useState(getCommissions() || []);
   const reviews = getReviews() || [];
@@ -120,6 +121,7 @@ const AdminDashboard = ({ onRefreshPaintings }) => {
         <button className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
         <button className={`admin-tab ${activeTab === 'manage' ? 'active' : ''}`} onClick={() => setActiveTab('manage')}>Manage Paintings</button>
         <button className={`admin-tab ${activeTab === 'commissions' ? 'active' : ''}`} onClick={() => setActiveTab('commissions')}>Commissions</button>
+        <button className={`admin-tab ${activeTab === 'analytics' ? 'active' : ''}`} onClick={() => setActiveTab('analytics')}>Analytics</button>
       </div>
 
       {/* Overview Tab */}
@@ -183,6 +185,13 @@ const AdminDashboard = ({ onRefreshPaintings }) => {
               </div>
             </div>
           )}
+        </section>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <section className="admin-analytics">
+          <AnalyticsDashboard orders={orders} paintings={paintings} currentUser={currentUser} />
         </section>
       )}
 

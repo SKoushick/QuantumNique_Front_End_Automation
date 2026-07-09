@@ -19,6 +19,8 @@ export default function Header({ activeTab, notifications, markAllNotificationsR
       case 'history': return 'Attendance Logs & Calendar';
       case 'defaulters': return 'Attendance Defaulters List (< 75%)';
       case 'reports': return 'Reports Generation Center';
+      case 'bulk_import': return 'Bulk Student Import';
+      case 'certificates': return 'Attendance Merit Certificates';
       default: return 'Teacher Workspace';
     }
   };
@@ -32,6 +34,8 @@ export default function Header({ activeTab, notifications, markAllNotificationsR
       case 'history': return ['Home', 'History'];
       case 'defaulters': return ['Home', 'Defaulters'];
       case 'reports': return ['Home', 'Reports'];
+      case 'bulk_import': return ['Home', 'Students', 'Bulk Import'];
+      case 'certificates': return ['Home', 'Merits', 'Certificates'];
       default: return ['Home'];
     }
   };

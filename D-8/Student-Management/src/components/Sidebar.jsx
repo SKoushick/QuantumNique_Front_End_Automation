@@ -9,7 +9,9 @@ import {
   Sun, 
   Moon, 
   GraduationCap,
-  ChevronDown
+  ChevronDown,
+  UserPlus,
+  Award
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -28,6 +30,8 @@ export default function Sidebar({
     { id: 'history', label: 'Attendance History', icon: History },
     { id: 'defaulters', label: 'Low Attendance', icon: AlertTriangle },
     { id: 'reports', label: 'Download Reports', icon: FileSpreadsheet },
+    { id: 'bulk_import', label: 'Bulk Import', icon: UserPlus },
+    { id: 'certificates', label: 'Certificates', icon: Award },
   ];
 
   return (
